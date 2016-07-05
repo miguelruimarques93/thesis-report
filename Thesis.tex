@@ -1,0 +1,136 @@
+%% LaTeX_Thesis_Template.tex
+% An unofficial LaTeX template for Cranfield theses.
+
+%%
+% This document is an example of the use of the unofficial "cranfieldthesis" 
+% LaTeX style file.  I hope it's useful, and good like.
+
+%% Options for the bibliography generator
+%% \bib_opts[bib_file]{library.bib}
+%% \bib_opts[output_file]{bibliography.tex}
+
+\documentclass[12pt, chapterprefix=false, oneside]{book}
+
+% Use the custom "cranfieldthesis" LaTeX style file. 
+\usepackage{cranfieldthesis}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage[titletoc]{appendix}
+
+% By default, LaTeX uses a serif font - these are traditionally thought to be
+% easier to read.   If you'd prefer sans-serif, please uncomment the 
+% following line.
+%\renewcommand{\familydefault}{\sfdefault}
+\renewcommand{\rmdefault}{phv} % Arial
+\renewcommand{\sfdefault}{phv} % Arial
+
+% Switch [1] for 1. in Reference list but maintain [1] in citation
+\makeatletter\renewcommand{\@biblabel}[1]{#1.}\makeatother
+
+% Example parameters for a typical taught MSc course
+\title{A Web Based Terrain Modeller using Fractals and CAD}
+\author{Miguel Marques}
+\date{August 2016}
+\school{Aerospace, Transport and Manufacturing}
+\course{Computational and Software Techniques in Engineering \\ Digital Signal and Image Processing}
+\degree{MSc}
+\academicyear{2015--2016}
+\supervisor{Dr Peter Sherar}
+\copyrightyear{2016}
+
+%	% Example parameters for a typical PhD
+%	\title{My Thesis Title}
+%	\author{A.\ Student}
+%	\date{August 2014}
+%	\school{Aerospace, Transport and Manufacturing}
+%	\course{Automotive Engineering}
+%	\degree{PhD}
+%	\academicyear{2013--2014}
+%	\supervisor{Dr D.\ J.\ Auger}
+%	\copyrightyear{2014}
+%	\fulfilment{} % removes message aboyut partial fulfilment
+
+
+\begin{document}
+
+
+%% Front matter
+%
+% This is where we do the title page, etc.
+%
+
+\frontmatter
+
+% Standard-Form Title Pages
+\maketitle
+
+% Abstract and Keywords
+\begin{abstract}
+    Type your abstract here.
+
+	\subsubsection*{Keywords}
+	Keyword 1; keyword 2; keyword 3.
+\end{abstract}
+
+% Acknowledgements
+\chapter{Acknowledgements}
+The author would like to thank \dots
+
+% Table of Contents
+\sstableofcontents
+
+% List of Figures
+\sslistoffigures
+
+% List of Tables
+\sslistoftables
+
+% List of Equations
+\sslistofequations
+
+% The list of abbreviations can't be automatically generated so you need to populate it yourself
+\begin{listofabbreviations}
+    \abbrev{SATM}{School of Aerospace, Technology and Manufacturing}
+    \abbrev{SEEA}{School of Energy, Environment and Agrifoods}
+\end{listofabbreviations}
+
+
+%% Main Matter
+%
+% This is where we include the main thesis content.
+%
+\mainmatter
+
+\include{introduction}
+\include{literature_review}
+\include{methodology}
+\include{software_details}
+\include{results}
+\include{conclusion}
+
+% References - you can use BiBTeX inside the 'references' environment if you want.
+% For short reference lists, you might find it just as easy to use the bibitem form.
+\begin{references}
+	\input{bibliography}
+\end{references}
+
+%% Back matter
+%
+% This is where we include appendices and references
+
+\chapter*{Appendices}
+\addcontentsline{toc}{chapter}{Appendices}
+
+Whilst Heading 1 to Heading 6 can be used to number headings in the main body of the thesis, Heading styles 7–9 have been modified specifically for lettered appendix headings with Heading 7 having the ‘Appendix’ prefix as shown below. \\
+
+\begin{appendices}
+	\titleformat{\chapter}{\Large\bfseries}{\appendixname~\thechapter}{0.5em}{}
+	\titleformat{\section}{\large\bfseries}{\thesection}{0.5em}{}
+	\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.5em}{}
+	\input {user_manual}
+\end{appendices}
+
+\backmatter
+
+\end{document}
+

@@ -1,0 +1,138 @@
+\chapter{Literature Review}
+
+Procedural generation of terrains has been the focus for many graphics researchers for some time now. Through the years this research has been mostly based on fractional Brownian motion and its similarity to a skyline of mountains, first noticed by Mandelbrot in \cite{Mandelbrot1983}. 
+
+% TODO: Document organization
+
+% TODO: Fractal Dimension
+% TODO: Hurst Exponent
+% TODO: Self-similarity
+% TODO: Self-affinity
+
+\subsection{Fractal Dimension}
+
+\begin{quotation}
+	"A fractal is by definition a set for which the Hausdorff Besicovitch dimension strictly exceeds the topological dimension." \cite[p.15]{Mandelbrot1983}
+\end{quotation}
+
+The Hausdorff Besicovitch dimension, also called fractional or fractal dimension, is a measure used to characterize a fractal. This dimension $ D_f $ does not need to be an integer and, for a surface in $ \mathbb{R}^n $, $ D_f \in [n, n+1)$.
+
+\subsection{Fractional Brownian Motion}
+
+Fractional Brownian Motion (fBm) was introduced by Mandelbrot and van Ness in \cite{Mandelbrot1968} and it is an extension of Brownian Motion that uses the Hurst Exponent ($H$) as a parameter to control the correlation between successive values, such that, $ 0 < H < 1 $. More specifically if $H = 0.5$ then fBm is just normal Brownian Motion and, due to that, the increments are independent and not correlated; if $H > 0.5$ the increments have positive correlation and this results in smooth curves while if $H < 0.5$ the increments have negative correlation and this results in erratic curves. \cite{Musgrave1993}
+
+In the field of fractal terrain generation fBm is approximated by $1/f^\beta$ noise, where $\beta$ is the spectral exponent of the noise. Considering $D_f$ as the fractal dimension and $D_E$ as the Euclidean dimension, $1/f^\beta$ noise follows the following rule:
+\[
+D_f = D_E + 1 - H = D_E + \frac{3-\beta}{2}
+\]
+
+\section{Terrain Modelling}
+
+In this section the different methods used for terrain generation are analysed. All the analysed methods try to approximate fBms and they are divided in six categories:
+\begin{itemize}
+	\item Poisson Faulting
+	\item Subdivision Methods
+	\item Fourier Filtering
+	\item Successive Random Additions
+	\item Noise synthesis
+	\item Generalized Stochastic Subdivision
+\end{itemize}
+
+%\begin{quotation}
+%	"the small spectral sums used to create random fractals for computer graphics allow the character of the basis function to show through clearly in the result. Usually, the choice of basis function is implicit in the algorithm: it is a sine wave for Fourier synthesis, a sawtooth wave in polygon subdivision, and a piecewise-cubic Hermite spline in noise-based procedural fBm. You could use a Walsh transform and get square waves as your basis. Wavelets (Ruskai 1992) promise to provide a powerful new set of finite basis functions. And again, sparse convolution (Lewis 1989) or fractal sum of pulses (Lovejoy and Mandelbrot 1985) offer perhaps the greatest flexibility in choice of basis functions." \cite[pg 497]{Ebert2003}
+%\end{quotation}
+
+\subsection{Poisson Faulting}
+
+The Poisson Faulting technique, also known as Random cuts algorithm, consists in applying Gaussian random displacements to a plane at Poisson distributed intervals. \cite{Musgrave1989}. This method was initially applied by Mandelbrot in \cite{Mandelbrot1983}. Although this method has the advantage of working for both planes and spheres, in the creation of random planets, it is $O(n^3)$ complex in time.
+
+\subsection{Subdivision Methods}
+
+The methods presented in this section derive from the midpoint displacement algorithm that consists in successively subdividing a line and displacing the division points. These methods are classified in two categories \cite{Mandelbrot1988}:
+\begin{itemize}
+	\item Wire-frame Midpoint Displacement
+	\item Tile Midpoint Displacement
+\end{itemize}
+
+\subsubsection{Wire-frame Midpoint Displacement} \label{sect:wireframeMD}
+
+In this type of methods the surface is thought of as a wire-frame mesh and the displacements are applied to the midpoints of the edges. This is the case of the Carpenter's Method \cite{Fournier1982} in which the wire-frame forms triangles which are recursively subdivided until there is no triangle with a side bigger than a specified length. Wire-frame methods are context independent as the only inputs that impact the shape of the generated surface come from the altitude values at the vertices. This context independence is the opposite of what happens with fBm, which incorporate an infinite span of context dependence \cite{Mandelbrot1988}.
+
+
+% TODO: Talk about creases
+%\begin{quotation}
+%"The "creases" sometimes encountered in stochastic subdivision can be related to the displacement noise variances and to the absence of autocorrelation information in Markovian subdivision."\cite{Lewis1987}
+% \end{quotation}
+
+\subsubsection{Tile Midpoint Displacement}
+
+In tile midpoint displacement methods the surface is seen as a collection of tiles and the displacements are applied to points in the middle of every tile. This methods are context dependent.
+
+\paragraph{Triangular tile midpoint displacement}
+In \cite{Mandelbrot1988} Mandelbrot proposes a method of tile displacement with triangles. In contrast with the Carpenter's method (section \ref{sect:wireframeMD}), the displacement is applied to the midpoint of the triangles using: \[ H(P) = \frac{H(A) + H(B) + H(C)}{3} + rand \] where $A$, $B$ and $C$ are the triangle vertices, $P$ is the triangle midpoint  and $rand$ is the random displacement value.
+
+\paragraph{Diamond-Square Algorithm}
+The Diamond-Square algorithm \cite{Fournier1982} consists in the subdivision of quadrilaterals in two steps: in the first step, known as diamond, the midpoint of the square is displaced using a random value; in the second step, known as square, the midpoint of the original square sides are interpolated from the value of the two square vertices and the two closest diamond vertices and displaced by another random value. In practice this is a hybrid between wire-frame and tile displacement method as when the initial structure is composed of squares it is not enough to just displace the tiles midpoints but also interpolate the edges midpoints.
+
+
+\paragraph{Square-square subdivision}
+In \cite{Miller1986} Miller proposes a method adapted from the CAD/CAM field. This method, denominated Square-Square subdivision, generates new points that form a square which is half the size of the existing one using the proportions 9:3:3:1, in which the nearest points have the greater weight. 
+
+
+\paragraph{Hexagonal tile midpoint displacement}
+In \cite{Mandelbrot1988} Mandelbrot also proposes the use of hexagonal tiles in the displacement method. This was due to his belief that the nesting properties of the displacement methods, that is when the generated points are nested in the old structure, was the cause of the creasing effect. Given the hexagon's properties, a structure like this will never nest but, instead, will create a crumpled boundary that fails to catch the eye, contrary to the "creases" that stand out.
+
+% NB: Solves creases
+
+\subsection{Fourier Filtering}
+
+Another method to generate fBm surfaces is using the Inverse Fourier Transform. This is done by generating a two dimensional Gaussian white noise signal, applying a $1/f^\beta$ low-pass filter in the frequency domain, and using the result of the Inverse Fourier Transform of the filtered signal as a height field \cite{Musgrave1989}. % This method has a time complexity $O(n \log{n})$ 
+
+\subsection{Successive Random Additions}
+
+The Successive Random Additions algorithm \cite{Saupe1988} builds on top of the midpoint displacement algorithm. If old points are reused in subsequent phases of subdivisions, they are displaced with a random variable with an appropriate distribution \cite{Musgrave1989}. In terms of complexity this method is comprised of approximately twice the number of additions of the midpoint displacement algorithm \cite{Voss1985}.
+
+\subsection{Noise synthesis}
+
+Noise synthesis consists in the addition of successive frequencies of tightly band-limited noises \cite{Musgrave1989}. This can be done using several noise algorithms, such as, Perlin Noise \cite{Perlin1985}, Simplex Nosie \cite{Perlin2002} or OpenSimplex Noise \cite{Spencer2015}.
+
+\subsection{Generalized Stochastic Subdivision}
+
+% TODO:		- Generalized Stochastic
+All the methods previously presented have a basis function that is, usually, implicit in the generation algorithm. This basis function can affect the final surface in different ways: the saw-tooth wave in polygon subdivision methods explains the creasing effect and the sine wave in Fourier synthesis causes the terrains to become periodic. In \cite{Lewis1987} Lewis proposes a method that interpolates several local points based on a autocorrelation function \cite{Musgrave1993}, that is, this algorithm is able to generate surfaces with any basis function.
+
+% \subsubsection{Multifractals}
+% TODO: 	- Multifractals
+
+%\begin{quotation}
+%	"Multifractals may be heuristically defined as "fractals that require a multiplicity of measures, such as fractal dimension, to characterize them." Another heuristic definition is "heterogeneous fractals, the heterogeneity of which is invariant with scale. They are most easily thought of as fractals whose dimension varies with location; the key point is that they are heterogeneous -- not the same everywhere"\cite{Musgrave1994}
+%\end{quotation}
+
+%See \cite{Evertsz1992}.
+
+% TODO: Erosion
+
+% \section{Constrained Terrain Generation}
+
+\section{Terrain Representation}
+
+% TODO: TINs
+
+\subsection{Heigh field}
+The height field, in some literature denominated as height map, is one of the most used forms of representing terrains in Computer Graphics. A height field stores an altitude value at regular intervals using a two-dimensional array \cite{Ebert2003}, and, as such, can be saved as a grayscale image. Due to the fact that only one altitude value is retained for a pair of coordinates this method can only represent surfaces, that is, it does not support overhangs or caves. 
+
+%\subsubsection{DEM file format}
+% TODO: DEM
+% TODO: Vector map
+% TODO: DTM
+
+%\begin{quotation}
+%	"There are several common file formats for height field data. There is the DEM (digital elevation map) format of the U.S. Geological Survey (USGS) height fields, which contain measured elevation data corresponding to the "quad" topographic [...]" \cite[pg 494]{Ebert2003}
+%\end{quotation}
+
+% \section{Terrain Rendering}
+
+% TODO: Rendering Optimizations (GPUGems article)
+% TODO: Scene Management
+% TODO: Lighting
+% TODO: Shadows

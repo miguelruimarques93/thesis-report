@@ -1,0 +1,156 @@
+\ProvidesPackage{cranfieldthesis}[2014/08/05 Daniel Auger's unofficial Cranfield thesis .sty file]
+\typeout{cranfieldthesis.sty - unofficial Cranfield thesis style file.}
+\typeout{    This file was prepared by Daniel Auger to help students wanting to use LaTeX.}
+\typeout{    It does not have `official' endorsement, but it will probably be fine.}
+\typeout{    The author is not able to offer support individual users, but if you are}
+\typeout{    using LaTeX, you will probably not run into any problems you can't fix}
+\typeout{    yourself.}
+
+\RequirePackage{geometry,calc,mathptmx,setspace,helvet, tocloft, titlesec, etoolbox}
+
+\geometry{
+	a4paper,
+	total={150mm,247mm},
+	left=30mm,
+	top=30mm,
+}
+
+\newcommand\school[1]{\def\theschool{#1}}
+\newcommand\supervisor[1]{\def\thesupervisor{#1}}
+\newcommand\course[1]{\def\thecourse{#1}}
+\newcommand\degree[1]{\def\thedegree{#1}}
+\newcommand\academicyear[1]{\def\theacademicyear{#1}}
+\renewcommand\date[1]{\def\thedate{#1}}
+\renewcommand\author[1]{\def\theauthor{#1}}
+\renewcommand\title[1]{\def\thetitle{#1}}
+\newcommand\copyrightyear[1]{\def\thecopyrightyear{#1}}
+\newcommand\fulfilment[1]{\def\thefulfilment{#1}}
+
+\fulfilment{This thesis is submitted in partial fulfilment of the requirements for the degree of \thedegree.\par\vfill}
+
+\school{\protect{$\backslash$school\{Aerospace, Technology and Manufacturing\}}}
+
+\author{$\backslash$author\{A.\ Student\}}
+\course{$\backslash$course\{Automotive Engineering\}}
+\degree{$\backslash$degree\{MSc\}}
+\academicyear{$\backslash$academicyear\{2013--2014\}}
+\date{$\backslash$date\{August 2014\}}
+\supervisor{$\backslash$supervisor\{Dr A.\ Supervisor\}}
+\title{$\backslash$title\{My Thesis Title\}}
+\copyrightyear{$\backslash$copyrightyear\{2014\}}
+
+\patchcmd{\l@chapter}{#1}{\MakeUppercase{#1}}{}{}
+
+\titlespacing*{\chapter}{0pt}{-0.5cm}{0pt}
+\titlespacing*{\section}{0pt}{0pt}{0pt}
+\titlespacing*{\subsection}{0pt}{0pt}{0pt}
+\titleformat{\chapter}[block]{\bfseries\Large}{\thechapter\ }{0pt}{\uppercase}
+
+\renewcommand\maketitle{
+\clearpage
+{  \makeatletter
+    \centering\large\singlespacing%
+    \pagestyle{empty}%
+    \null\vfill
+    CRANFIELD UNIVERSITY\par
+    \vfill%
+    \MakeUppercase{\theauthor}\par
+    \vfill
+    \MakeUppercase{\thetitle}\par
+    \vfill%
+    SCHOOL OF~\MakeUppercase{\theschool}\\%
+    \thecourse\par%
+    \vfill
+    \thedegree\\
+     Academic Year: \theacademicyear\par
+   \vfill
+   Supervisor: \thesupervisor\\%
+   \thedate\par
+    \vfill\null\clearpage
+    \centering\large%
+    \pagestyle{empty}
+    \null\vfill
+    CRANFIELD UNIVERSITY\par
+    \vfill%
+    SCHOOL OF~\MakeUppercase{\theschool}\\%
+    \thecourse\par%
+    \vfill
+    \thedegree\par%
+    \vfill
+    Academic Year: \theacademicyear\par%
+    \vfill
+    \MakeUppercase{\theauthor}\par
+    \vfill
+    \thetitle\par
+    \vfill
+    Supervisor: \thesupervisor\\
+    \thedate\par
+     \vfill
+     \thefulfilment
+     \copyright\ Cranfield University \thecopyrightyear. All rights reserved.
+    No part of this publication may be reproduced without the written
+     permission of the copyright owner.
+    \cleardoublepage
+    \makeatother
+}}
+
+\newenvironment{references}
+{\cleardoublepage\addcontentsline{toc}{chapter}{\MakeUppercase{References}}\begin{thebibliography}{999}}
+{\end{thebibliography}\cleardoublepage}
+\renewcommand{\bibname}{\MakeUppercase{References}}
+
+\setcounter{tocdepth}{3}
+\renewcommand\cftchapfont{}
+\renewcommand\cftchappagefont{}
+\renewcommand\cftsecpagefont{}
+\renewcommand\cftsubsecpagefont{}  
+\renewcommand\cftsubsubsecpagefont{}
+\renewcommand\cftfigpagefont{}
+\renewcommand\cfttabpagefont{}
+\renewcommand\cftchapleader{\cftdotfill{\cftdotsep}}
+\renewcommand\cftdotsep{0.5}
+
+\newcommand\tocspacing{2.5pt}
+
+\renewcommand\cftbeforechapskip{\tocspacing}
+\renewcommand\cftbeforesecskip{\tocspacing}
+\renewcommand\cftbeforesubsecskip{\tocspacing}	
+
+\newcommand\tocidentsec{0.42cm}
+\newcommand\tocidentsubsec{0.85cm}
+
+\renewcommand{\cftsecindent}{\tocidentsec}
+\renewcommand{\cftsubsecindent}{\tocidentsubsec}
+
+\renewcommand\contentsname{\Large\MakeUppercase{Table of Contents}}
+\newcommand\sstableofcontents{\clearpage\addcontentsline{toc}{chapter}{Table of Contents}\singlespacing\tableofcontents\doublespacing}
+
+\renewcommand\listfigurename{\Large\MakeUppercase{List of Figures}}
+\newcommand\sslistoffigures{\clearpage\addcontentsline{toc}{chapter}{List of Figures}\singlespacing\listoffigures\doublespacing}
+
+\renewcommand\listtablename{\Large\MakeUppercase{List of Tables}}
+\newcommand\sslistoftables{\clearpage\addcontentsline{toc}{chapter}{List of Tables}\singlespacing\listoftables\doublespacing}
+
+\newenvironment{abstract}
+{\chapter{Abstract}}
+{}%
+
+\newenvironment{listofabbreviations}%
+{\chapter{List of Abbreviations}}
+{}%
+\newcommand{\abbrev}[2]{{\noindent\parbox[t]{1in-3ex}{#1}\rule{3ex}{0ex}\parbox[t]{0.99\textwidth-1in}{#2}\par}}
+
+% \clearpage\addcontentsline{toc}{chapter}{List of Equations}
+
+\long\def\theequation{\ifnum \c@chapter > \z@ \thechapter -\fi \@arabic \c@equation}
+
+\newcommand{\listequationsname}{\Large\MakeUppercase{List of Equations}}
+\newlistof{myequations}{equ}{\listequationsname}
+
+\newcommand{\myequations}[1]{\addcontentsline{equ}{myequations}{(\theequation) {#1}}\par}
+
+\newcommand\sslistofequations{\clearpage\addcontentsline{toc}{chapter}{List of Equations}\singlespacing\listofmyequations\doublespacing}
+
+
+
+\endinput
