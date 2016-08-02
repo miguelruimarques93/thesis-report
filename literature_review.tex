@@ -1,13 +1,8 @@
-\chapter{Literature Review}
+\chapter{Literature Review} \label{chap:literature_review}
 
 Procedural generation of terrains has been the focus for many graphics researchers for some time now. Through the years this research has been mostly based on fractional Brownian motion and its similarity to a skyline of mountains, first noticed by Mandelbrot in \cite{Mandelbrot1983}. 
 
-% TODO: Document organization
-
-% TODO: Fractal Dimension
-% TODO: Hurst Exponent
-% TODO: Self-similarity
-% TODO: Self-affinity
+\section {Mathematical Background}
 
 \subsection{Fractal Dimension}
 
@@ -118,7 +113,7 @@ All the methods previously presented have a basis function that is, usually, imp
 
 % TODO: TINs
 
-\subsection{Heigh field}
+\subsection{Height field}
 The height field, in some literature denominated as height map, is one of the most used forms of representing terrains in Computer Graphics. A height field stores an altitude value at regular intervals using a two-dimensional array \cite{Ebert2003}, and, as such, can be saved as a grayscale image. Due to the fact that only one altitude value is retained for a pair of coordinates this method can only represent surfaces, that is, it does not support overhangs or caves. 
 
 %\subsubsection{DEM file format}

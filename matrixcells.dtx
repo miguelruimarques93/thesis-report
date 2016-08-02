@@ -1,0 +1,420 @@
+% \iffalse meta-comment
+%<*internal>
+\iffalse
+%</internal>
+%<*readme>
+----------------------------------------------------------------
+matrixcells --- tile a TikZ/PGF matrix node with rectangular cells
+E-mail: stacey@math.ntnu.no
+Released under the LaTeX Project Public License v1.3c or later
+See http://www.latex-project.org/lppl.txt
+----------------------------------------------------------------
+
+This package defines extra rectangular nodes for a TikZ/PGF matrix which tile the matrix exactly.
+%</readme>
+%<*internal>
+\fi
+\def\nameofplainTeX{plain}
+\ifx\fmtname\nameofplainTeX\else
+  \expandafter\begingroup
+\fi
+%</internal>
+%<*install>
+\input docstrip.tex
+\keepsilent
+\askforoverwritefalse
+\preamble
+----------------------------------------------------------------
+matrixcells --- extra nodes for a TikZ/PGF matrix.
+E-mail: stacey@math.ntnu.no
+Released under the LaTeX Project Public License v1.3c or later
+See http://www.latex-project.org/lppl.txt
+----------------------------------------------------------------
+
+\endpreamble
+\postamble
+
+Copyright (C) 2011 by Andrew Stacey <stacey@math.ntnu.no>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License (LPPL), either
+version 1.3c of this license or (at your option) any later
+version.  The latest version of this license is in the file:
+
+http://www.latex-project.org/lppl.txt
+
+This work is "maintained" (as per LPPL maintenance status) by
+Andrew Stacey.
+
+This work consists of the file  matrixcells.dtx
+and the derived files           matrixcells.ins,
+                                matrixcells.pdf, and
+                                matrixcells.sty.
+
+\endpostamble
+\usedir{tex/latex/matrixcells}
+\generate{
+  \file{\jobname.sty}{\from{\jobname.dtx}{package}}
+}
+%</install>
+%<install>\endbatchfile
+%<*internal>
+\usedir{source/latex/matrixcells}
+\generate{
+  \file{\jobname.ins}{\from{\jobname.dtx}{install}}
+}
+\nopreamble\nopostamble
+\usedir{doc/latex/demopkg}
+\generate{
+  \file{README.txt}{\from{\jobname.dtx}{readme}}
+}
+\ifx\fmtname\nameofplainTeX
+  \expandafter\endbatchfile
+\else
+  \expandafter\endgroup
+\fi
+%</internal>
+%<*package>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{matrixcells}[2011/06/03 v1.0 Extra nodes for TikZ/PGF matrices]
+%</package>
+%<*driver>
+\documentclass{ltxdoc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{xcolor}
+\usepackage[numbered]{hypdoc}
+\usepackage{fancyvrb}
+\definecolor{lstbgcolor}{rgb}{0.9,0.9,0.9} 
+ 
+\usepackage{listings}
+\lstloadlanguages{[LaTeX]TeX}
+\lstset{breakatwhitespace=true,breaklines=true,language=TeX}
+
+\EnableCrossrefs
+\CodelineIndex
+\RecordChanges
+\begin{document}
+  \DocInput{\jobname.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+%
+% \changes{1.0}{2011/05/03}{Converted to DTX file}
+%
+% \DoNotIndex{\newcommand,\newenvironment}
+%
+% \providecommand*{\url}{\texttt}
+% \GetFileInfo{matrixcells.dtx}
+% \title{The \textsf{matrixcells} Package: Implementation}
+% \author{Andrew Stacey \\ \url{stacey@math.ntnu.no}}
+% \date{\fileversion~from \filedate}
+%
+%
+% \maketitle
+%
+%
+%
+% \StopEventually{}
+%
+% \section{Implementation}
+%
+% \iffalse
+%<*package>
+% \fi
+%
+% Test the version of PGF to see if it's what we expect.
+% If not, issue a warning (but continue anyway; after all, it \emph{might just work}).
+%    \begin{macrocode}
+\def\matrixcells@pgfversion{2.10}%
+\ifx\pgfversion\matrixcells@pgfversion
+\else
+\PackageWarning{matrixcells}{This package was designed using PGF2.10; you are using \pgfversion.}%
+\fi
+%    \end{macrocode}
+%
+% This \Verb+\if+ ensures that we don't get called twice on a matrix.
+%    \begin{macrocode}
+\newif\if@labellingcells
+\@labellingcellstrue
+%    \end{macrocode}
+%
+% This \Verb+\if+ controls whether the cells should extend into the row and column gaps or not.
+%    \begin{macrocode}
+\newif\iflc@extendcells
+\lc@extendcellstrue
+\tikzset{
+  extend cells/.is if=lc@extendcells
+}
+%    \end{macrocode}
+% Initialise the "memory" keys of the name and inner sep
+% \begin{macro}{label cells initialise}
+% This is the initialiser code.
+% We want to make sure that we know the name and the inner seps of the matrix.
+%    \begin{macrocode}
+\tikzset{label cells initialise/.code={%
+%    \end{macrocode}
+% The name and inner sep are set by the time we get to the point where \Verb+\tikz@options+ is run.
+%    \begin{macrocode}
+    \tikz@addoption{%
+    \iftikz@is@matrix
+      \xdef\lc@name{\tikz@fig@name}%
+      \xdef\lc@innerxsep{\pgfkeysvalueof{/pgf/inner xsep}}%
+      \xdef\lc@innerysep{\pgfkeysvalueof{/pgf/inner ysep}}%
+      \iflc@extendcells
+      \xdef\lc@extendcells{true}%
+      \else
+      \xdef\lc@extendcells{false}%
+      \fi
+    \fi%
+    }%
+  }
+}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{label cells}
+% This calls the initialiser and the cell node creator; it takes an (optional) argument that is a prefix for the cell names.
+% We test against the if to check if we've already been called to make sure we don't install the code twice.
+%    \begin{macrocode}
+\pgfkeys{/tikz/label cells/.code={%
+    \if@labellingcells
+    \tikzset{
+      label cells initialise,%
+      append after command={[create cell nodes=#1]}%
+    }
+    \@labellingcellsfalse
+    \fi
+    }%
+  }
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{create cell nodes}
+% This creates the cell nodes; we have a non-optional argument that defines a prefix for the node names (as we're not called directly, it was easier to test for a blank argument than to carry the optionality over several commands)
+%    \begin{macrocode}
+\tikzset{create cell nodes/.code={
+%    \end{macrocode}
+% Test to see if we have been given an actual argument
+%    \begin{macrocode}
+\edef\lc@test@name{#1}
+\ifx\lc@test@name\@empty
+\else
+\edef\lc@name{#1}
+\fi
+\csname lc@extendcells\lc@extendcells\endcsname
+%    \end{macrocode}
+% These hold the number of rows and columns
+%    \begin{macrocode}
+\edef\lc@matrix@row{\the\pgfmatrixcurrentrow}
+\edef\lc@matrix@col{\the\pgfmatrixcurrentcolumn}
+%    \end{macrocode}
+% These hold our inner seps
+%    \begin{macrocode}
+\pgfmathparse{-2*\lc@innerxsep}
+\edef\lc@inner@xsep{\pgfmathresult}
+\pgfmathparse{-2*\lc@innerysep + .666666em}
+\edef\lc@inner@ysep{\pgfmathresult}
+%    \end{macrocode}
+% We're going to iterate over the dimensions stored by the matrix when it computes the sizes of the nodes.
+% To make life easier for ourselves, we define a ``0th'' row and column to store our initial values.
+%    \begin{macrocode}
+\pgfmathparse{\csname pgf@matrix@minx1\endcsname - \csname pgf@matrix@maxx1\endcsname}
+\expandafter\edef\csname pgf@matrix@minx0\endcsname{\pgfmathresult}
+\expandafter\edef\csname pgf@matrix@maxx0\endcsname{\lc@inner@xsep}
+\pgfmathparse{\csname pgf@matrix@miny1\endcsname +\csname pgf@matrix@maxy1\endcsname}
+\expandafter\edef\csname pgf@matrix@miny0\endcsname{\pgfmathresult}
+\expandafter\edef\csname pgf@matrix@maxy0\endcsname{\lc@inner@ysep}
+%    \end{macrocode}
+% We do the same for the other end.
+%    \begin{macrocode}
+\pgfmathparse{\csname pgf@matrix@minx\the\pgfmatrixcurrentcolumn\endcsname + \csname pgf@matrix@maxx\the\pgfmatrixcurrentcolumn\endcsname}
+\advance\pgfmatrixcurrentcolumn by 1
+\expandafter\edef\csname pgf@matrix@minx\the\pgfmatrixcurrentcolumn\endcsname{\pgfmathresult}
+\expandafter\edef\csname pgf@matrix@maxx\the\pgfmatrixcurrentcolumn\endcsname{\lc@inner@xsep}
+\pgfmathparse{\csname pgf@matrix@miny\the\pgfmatrixcurrentrow\endcsname - \csname pgf@matrix@maxy\the\pgfmatrixcurrentrow\endcsname}
+\advance\pgfmatrixcurrentrow by 1
+\expandafter\edef\csname pgf@matrix@miny\the\pgfmatrixcurrentrow\endcsname{\pgfmathresult}
+\expandafter\edef\csname pgf@matrix@maxy\the\pgfmatrixcurrentrow\endcsname{\lc@inner@ysep}
+%    \end{macrocode}
+% Now we render our nodes, shifting by the matrix offset
+%    \begin{macrocode}
+\pgf@matrix@offset
+\pgfgetlastxy\ck@shift@x\ck@shift@y
+\begin{scope}[shift={(\ck@shift@x,\ck@shift@y+0.3333em)}]
+%    \end{macrocode}
+% Iterate over the rows and columns
+%    \begin{macrocode}
+\foreach \lc@row in {1,...,\lc@matrix@row} {
+       \pgfmathparse{int(\lc@row - 1)}
+       \edef\lc@prow{\pgfmathresult}
+       \pgfmathparse{int(\lc@row + 1)}
+       \edef\lc@nrow{\pgfmathresult}
+    \foreach \lc@col in {1,...,\lc@matrix@col} {
+         \pgfmathparse{int(\lc@col - 1)}
+       \edef\lc@pcol{\pgfmathresult}
+         \pgfmathparse{int(\lc@col + 1)}
+       \edef\lc@ncol{\pgfmathresult}
+%    \end{macrocode}
+% These compute the corners of the node at the current position.
+%    \begin{macrocode}
+    \iflc@extendcells
+    \message{extending cells}
+         \pgfmathsetmacro{\lc@ulx}{.5*\csname pgf@matrix@minx\lc@col\endcsname - .5*\csname pgf@matrix@maxx\lc@col\endcsname+.5*\csname pgf@matrix@minx\lc@pcol\endcsname + .5*\csname pgf@matrix@maxx\lc@pcol\endcsname}
+         \pgfmathsetmacro{\lc@uly}{ .5*\csname pgf@matrix@miny\lc@row\endcsname + .5*\csname pgf@matrix@maxy\lc@row\endcsname +  .5*\csname pgf@matrix@miny\lc@prow\endcsname - .5*\csname pgf@matrix@maxy\lc@prow\endcsname}
+    \pgfmathsetmacro{\lc@uly}{\csname pgf@matrix@miny\lc@row\endcsname}
+         \pgfmathsetmacro{\lc@brx}{.5*\csname pgf@matrix@minx\lc@col\endcsname + .5*\csname pgf@matrix@maxx\lc@col\endcsname+.5*\csname pgf@matrix@minx\lc@ncol\endcsname - .5*\csname pgf@matrix@maxx\lc@ncol\endcsname}
+         \pgfmathsetmacro{\lc@bry}{ .5*\csname pgf@matrix@miny\lc@row\endcsname - .5*\csname pgf@matrix@maxy\lc@row\endcsname +  .5*\csname pgf@matrix@miny\lc@nrow\endcsname + .5*\csname pgf@matrix@maxy\lc@nrow\endcsname}
+    \else
+    \message{not extending cells}
+         \pgfmathsetmacro{\lc@ulx}{.5*\csname pgf@matrix@minx\lc@col\endcsname - .5*\csname pgf@matrix@maxx\lc@col\endcsname + .5*\csname pgf@matrix@minx\lc@pcol\endcsname + .5*\csname pgf@matrix@maxx\lc@pcol\endcsname}
+         \pgfmathsetmacro{\lc@uly}{ .5*\csname pgf@matrix@miny\lc@row\endcsname + .5*\csname pgf@matrix@maxy\lc@row\endcsname +  .5*\csname pgf@matrix@miny\lc@prow\endcsname - .5*\csname pgf@matrix@maxy\lc@prow\endcsname}
+         \pgfmathsetmacro{\lc@brx}{.5*\csname pgf@matrix@minx\lc@col\endcsname + .5*\csname pgf@matrix@maxx\lc@col\endcsname+.5*\csname pgf@matrix@minx\lc@ncol\endcsname - .5*\csname pgf@matrix@maxx\lc@ncol\endcsname}
+         \pgfmathsetmacro{\lc@bry}{ .5*\csname pgf@matrix@miny\lc@row\endcsname - .5*\csname pgf@matrix@maxy\lc@row\endcsname +  .5*\csname pgf@matrix@miny\lc@nrow\endcsname + .5*\csname pgf@matrix@maxy\lc@nrow\endcsname}
+    \pgfmathsetmacro\lc@ulx{\csname pgf@matrix@minx\lc@col\endcsname}%
+    \pgfmathsetmacro\lc@uly{\csname pgf@matrix@miny\lc@row\endcsname}%
+    \pgfmathsetmacro\lc@brx{\csname pgf@matrix@maxx\lc@col\endcsname}%
+    \pgfmathsetmacro\lc@bry{\csname pgf@matrix@maxy\lc@row\endcsname}%
+    \fi
+%    \end{macrocode}
+% Having the coordinates, we compute the width and height
+%    \begin{macrocode}
+         \pgfmathsetmacro{\lc@width}{\lc@brx - \lc@ulx}
+         \pgfmathsetmacro{\lc@height}{\lc@uly - \lc@bry}
+    \pgfsys@beginscope
+%    \end{macrocode}
+% Now we set the node
+%    \begin{macrocode}
+    \tikzset{minimum width=\lc@width,minimum height=\lc@height,shift={(\lc@ulx pt,\lc@uly pt)}}%
+    \tikz@transform
+    \pgfnode{rectangle}{north west}{}{\lc@name-cell-\lc@row-\lc@col}{}%
+%    \end{macrocode}
+% We throw away the path so created.
+%    \begin{macrocode}
+    \pgfusepath{discard}%
+    \pgfsys@endscope
+    }
+}
+\end{scope}
+  }}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{hlines}
+% The \Verb+hlines+ key is for drawing lines between the rows of a matrix.
+%    \begin{macrocode}
+\tikzset{
+    hlines/.style={%
+      label cells,
+      initialise hlines,
+      append after command={%
+%    \end{macrocode}
+% The \Verb+\hline+ command stores up the lines to be drawn.
+% The following code renders them.
+%    \begin{macrocode}
+        \pgfextra{\pgfmathtruncatemacro{\hline@cols}{\pgfmatrixcurrentcolumn - 1}}%
+        \ifx\hline@rows\pgfutil@empty
+        \else
+        \foreach \hline@row in \hline@rows {
+          \pgfextra{\edef\hline@temp{
+          (\tikzlastnode-cell-\hline@row-1.north west) edge[\csname hline@row@\hline@row\endcsname] (\tikzlastnode-cell-\hline@row-\hline@cols.north east)}}
+          \hline@temp
+        }
+        \fi
+      }
+    },
+%    \end{macrocode}
+% This is our initialiser code.
+%    \begin{macrocode}
+    initialise hlines/.code={
+      \global\let\hline@rows=\pgfutil@empty
+      \let\hline=\hline@inmatrix
+    },
+%    \end{macrocode}
+% The last line can't be done with an \Verb+\hline+ so we have to provide a key for it.
+%    \begin{macrocode}
+    underline matrix/.style={
+      append after command={%
+        \pgfextra{\pgfmathtruncatemacro{\hline@cols}{\pgfmatrixcurrentcolumn - 1}%
+          \pgfmathtruncatemacro{\hline@rows}{\pgfmatrixcurrentrow - 1}}%
+        (\tikzlastnode-cell-\hline@rows-1.south west) edge[#1] (\tikzlastnode-cell-\hline@rows-\hline@cols.south east)}
+    },
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{matrix grid}
+% The \Verb+matrix grid+ key draws lines between the rows and columns creating a grid-like effect.
+%    \begin{macrocode}
+    matrix grid/.style={
+      label cells,
+      append after command={%
+        \pgfextra{\pgfmathtruncatemacro{\hline@cols}{\pgfmatrixcurrentcolumn - 1}%
+        \pgfmathtruncatemacro{\hline@rows}{\pgfmatrixcurrentrow - 1}}%
+        \foreach \hline@row in {2,...,\hline@rows} {
+          \pgfextra{\edef\hline@temp{
+          (\tikzlastnode-cell-\hline@row-1.north west) edge[#1] (\tikzlastnode-cell-\hline@row-\hline@cols.north east)}}
+          \hline@temp
+        }
+        \foreach \hline@col in {2,...,\hline@cols} {
+          \pgfextra{\edef\hline@temp{
+          (\tikzlastnode-cell-1-\hline@col.north west) edge[#1] (\tikzlastnode-cell-\hline@rows-\hline@col.south west)}}
+          \hline@temp
+        }
+      }
+    },
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{matrix border}
+% The \Verb+matrix border+ puts a border around the matrix using the cell nodes.
+% This might be slightly different to the border drawn around the matrix by itself so is more compatible with the cell nodes.
+%    \begin{macrocode}
+    matrix border/.style={
+      label cells,
+      append after command={%
+        \pgfextra{\pgfmathtruncatemacro{\hline@cols}{\pgfmatrixcurrentcolumn - 1}%
+        \pgfmathtruncatemacro{\hline@rows}{\pgfmatrixcurrentrow - 1}%
+          \draw[#1] (\tikzlastnode-cell-1-1.north west) rectangle (\tikzlastnode-cell-\hline@rows-\hline@cols.south east);
+        }
+      }
+    }
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{hline@inmatrix}
+% This is the command which saves up the lines to be drawn between the lines of the matrix.
+%    \begin{macrocode}
+\newcommand\hline@inmatrix[1][]{%
+    \ifx\hline@rows\pgfutil@empty
+     \xdef\hline@rows{\the\pgfmatrixcurrentrow}%
+    \else
+     \xdef\hline@rows{\hline@rows,\the\pgfmatrixcurrentrow}%
+    \fi
+    \expandafter\xdef\csname hline@row@\the\pgfmatrixcurrentrow\endcsname{#1}%
+}
+%    \end{macrocode}
+% \end{macro}
+% \iffalse
+%</package>
+% \fi
+%
+% \Finale
+
+\endinput

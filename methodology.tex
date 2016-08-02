@@ -1,19 +1,244 @@
-\chapter{Methodology}
+\chapter{Methodology} \label{chap:methodology}
+
+This chapter presents a detailed explanation of the proposed process. 
+
+
+%In this chapter the used random generation methods are presented and the created blending process is explained in detail. \par
+
+\begin{itemize}
+	\item Detailed proposed process
+	\item Control parameters available to the user
+\end{itemize}
 
 \section{Process Overview}
 
-\section{Random Surface Generators}
-% Why these and not others?
-  \subsection{Fourier Filtering}
-    \subsection{Noise Synthesis}
-      \subsubsection{Perlin Noise}
-      \subsubsection{Simplex Noise}
+\begin{figure}[h!]
+	\begin{center}
+		\begin{tikzpicture}[
+		font=\sffamily,
+		every matrix/.style={column sep=0.5cm, row sep=0.5cm},
+		phase/.style={draw, thick, align=center, fill=gray!35, inner sep=.6cm},
+		to/.style={->,semithick,font=\sffamily\footnotesize},
+		every node/.style={anchor=center}
+		]
+		
+		\matrix[matrix of nodes,ampersand replacement=\&]
+		{
+			|[phase, text width = 2.5cm] (1)| \shortstack{CAD Modelling} \& 
+			|[phase] (2)| \shortstack{Random Surface \\ Generation} \& 
+			|[phase, text width = 2.5cm] (3)| \shortstack{Blending} \\
+		};
+		
+		\draw[to] (1) -- (2);
+		\draw[to] (2) -- (3);
+		\end{tikzpicture}
+	\end{center}
+	
+	\caption{Process Phases}
+	\label{fig:process_phases}
+\end{figure}
 
-\section{Blending Process}
+The proposed workflow consists of three high level phases which are presented in Figure \ref{fig:process_phases}. The first is the CAD modelling phase (section \ref{sec:methodology:phase1}) which consists on the creation of a simplified model of the terrain, which will be denominated as base surface, containing only the main characteristics, such as, mountains and valleys. The second phase (section \ref{sec:methodology:phase2}) consists in the generation of the random surface from which the details will be acquired. Finally the third and final phase is the blending phase (section \ref{sec:methodology:phase3}) in which the base surface is combined with the random surface to create a more detailed version of the terrain.
 
-  \subsection{Modified Unsharp Filter}
-    \subsubsection{Description} % Details and Usage
-    \subsubsection{Parameters}
+%\begin{figure}[!h]
+%	\begin{center}
+%		\begin{tikzpicture}
+%		[
+%		font=\sffamily,
+%		every matrix/.style={column sep=0.01cm, row sep=0.5cm},
+%		source/.style={draw, thick, rounded corners, fill=yellow!20, inner sep=.3cm},
+%		process/.style={draw, thick, fill=blue!20, inner sep=.3cm},
+%		to/.style={->,semithick,font=\sffamily\footnotesize},
+%		every node/.style={anchor=center}
+%		]
+%		
+%		\matrix[matrix of nodes]
+%		{
+%			& |[source] (base-surface)| \shortstack{Load \\ Base Surface} & \\ 
+%			|[process] (random)| \shortstack{ Generate  \\ Random Surface } &  &[row sep=1cm] |[process] (norm)| Normalize \\
+%			|[process] (unsharp)| \shortstack{Gaussian Blur \\ \& Subtraction} & &[row sep=1cm] |[process] (map)| \shortstack{Map According to \\ Hermite Spline} \\
+%			& |[process] (multiply)| Multiply & \\
+%			& |[process] (add)| Add Base Surface & \\
+%			& |[process] (norm2)| Normalize & \\
+%			& |[source] (result) | \shortstack{Result Surface \\ \& Normal Map} & \\
+%		};
+%		
+%		\draw[to] (base-surface) -| node[pos=0.25, above] {Size} (random);
+%		\draw[to] (random) -- (unsharp);
+%		\draw[to] (unsharp) |- node[pos=0.5, below] {\shortstack{ Random Surface  Details }} (multiply);
+%		
+%		\draw[to] (base-surface) -| node[pos=0.25, above] {Surface} (norm);
+%		\draw[to] (norm) -- (map);
+%		\draw[to] (map) |- node[pos=0.5, below] {\shortstack{ Adjusted Base Surface }} (multiply);
+%		
+%		
+%		\draw[to] (multiply) -- (add);
+%		\draw[to] (add) -- (norm2);
+%		\draw[to] (norm2) -- (result);
+%		\end{tikzpicture}
+%	\end{center}
+%   	\caption{Process Overview}
+%   	\label{fig:process_overview}
+%\end{figure}
+
+\section {Phase 1: CAD Modelling} \label{sec:methodology:phase1}
+
+The purpose of the CAD Modelling phase is to enabled the user to specify the main features of the terrain, such as mountains and valleys, using manual modelling. This phase results in the generation of a height map that contains the base surface.
+
+\section{Phase 2: Random Surface Generation} \label{sec:methodology:phase2}
+
+With the base surface obtained from the first phase it is now possible to generate a random surface with the same dimensions. This can be done using several methods, as discussed in Chapter \ref{chap:literature_review}. For the purpose of this application the chosen methods were Fourier Filtering (section \ref{sec:methodology:fourier}) and Noise Synthesis (section \ref{sec:methodology:noise}).
+
+
+  \subsection{Fourier Filtering} \label{sec:methodology:fourier}
+    
+    The fourier filtering method, shown in Figure \ref{fig:fourier_filtering}, consists in applying a $f^{-\beta}$ filter to a white noise surface in frequency domain. 
+    
+    This method only needs one parameter, the filter power ($\beta$).
+    
+    Using a fork and join approach it is possible to parallelize this method as there is a parallel version of each of it's steps.
+    
+    
+    \begin{figure}[!h]
+    	\begin{center}
+    		\begin{tikzpicture}[
+    		font=\sffamily,
+    		every matrix/.style={column sep=0.01cm, row sep=0.5cm},
+    		every node/.style={anchor=center, font=\footnotesize, inner sep=.3cm},
+    		source/.style={draw, thick, rounded corners, fill={rgb:red,1;green,2;blue,3}, text=white},
+    		process/.style={draw, thick, fill=gray!35},
+    		to/.style={->,semithick,font=\sffamily\footnotesize}
+    		]
+    		
+    		\matrix[matrix of nodes]
+    		{
+    			|[source] (1)| \shortstack{White noise  \\ matrix} \\
+    			& |[process] (2)| \shortstack{Fourier Transform} \\
+    			& & |[process] (3)| \shortstack{$f^{-\beta}$ Filter} \\ 
+    			& & & |[process] (4)| \shortstack{Inverse \\ Fourier Transform} \\
+    			& & & & |[source] (5)| \shortstack{Random Surface} \\
+    		};
+    		
+    		\draw[to] (1) |- (2);
+    		\draw[to] (2) |- (3);
+    		\draw[to] (3) |- (4);
+    		\draw[to] (4) |- (5);
+    		
+    		\end{tikzpicture}
+    	\end{center}
+    	\caption{Fourier Filtering}
+    	\label{fig:fourier_filtering}
+    \end{figure}		
+  
+  \subsection{Noise Synthesis} \label{sec:methodology:noise}
+  
+	\begin{equation}
+		\frac{\sum\limits_{i = 0}^{octaves - 1} noise(x \times lacunarity^i + base, y \times lacunarity^i + base) \times persistence^i}{ \sum\limits_{i = 0}^{octaves - 1} persistence^i}
+		\label{eq:noise_synthesis}
+	\end{equation}
+	\myequation{Noise Synthesis}
+  
+    The noise synthesis method consists on using a weighted average of several random values to approximate an fBm surface, as described in equation \ref{eq:noise_synthesis}. This assumes that the random number generation is a structured noise function. The implementation for this method is based on the code presented in \cite{Musgrave1993}. There are several parameters used in the method, namely:
+    
+    \begin{itemize}
+    	\item \textbf{Number of octaves:} number of noise samples to use
+    	\item \textbf{Persistence:} contribution gap between successive octaves
+    	\item \textbf{Lacunarity:} gap between successive frequencies
+    	\item \textbf{Base:} base value for noise arguments
+    	\item \textbf{Noise:} noise function used to generate random numbers (eg: perlin noise \cite{Perlin1985}, simplex noise \cite{Perlin2002})
+    \end{itemize}
+    
+    
+
+
+\section{Phase 3: Blending}  \label{sec:methodology:phase3}
+  
+  
+  
+  \begin{figure}[!h]
+  	\begin{center}
+		\begin{tikzpicture}[
+			 font=\sffamily,
+			 every matrix/.style={column sep=1.0cm, row sep=1.5cm},
+			 every node/.style={anchor=mid, text centered, font=\normalsize, inner sep=.6cm},
+			 process/.style={draw, thick, fill=gray!35},
+			 to/.style={->,semithick,font=\sffamily\footnotesize}
+			 ]
+			 
+			 \matrix (table) [matrix of nodes, ampersand replacement=\&]
+			 {
+				  	|[process, text width = 3.0cm] (base)| \shortstack{Base Surface \\ Mapping} \& \& 
+				  	|[process, text width = 3.0cm] (random)| \shortstack{Random Detail \\ Extraction} \\
+				  	\& |[process, text width = 3.0cm] (combine)| \shortstack{Combine \\ Operation} \& \\
+			 };
+			 
+			 \draw[to] (base.south) |- (0,1.5) -- (0,1.5) -| (combine.north);
+			 \draw[to] (random.south) |- (0,1.5) -- (0,1.5) -| (combine.north);
+		
+		\end{tikzpicture}
+	  \end{center}
+ 	  \caption{Blending Phase}
+ 	  \label{fig:blending}
+  \end{figure}	
+  
+  The Blending phase is divided in three parts that are shown in Figure \ref{fig:blending}. 
+  
+  \subsection {Base Surface Mapping}
+  
+	In the Base Surface Mapping part the user has the possibility of adjusting the details that will be added to the base surface. This is done by manipulating a spline which represents a function that maps a height value to a multiplier. This mapping is then applied to the base surface generating a multiplier matrix.
+	
+	The spline function is obtained using a Picewise Monotone Hermite Cubic Interpolation of the control points specified by the user. 
+    
+  \subsection{Random Detail Extraction}
+
+	In order to extract the details from the random surface, a high-pass filter is used. In the case of this application the HPF is implemented by subtracting a smoothed version of the surface to the surface itself. The smoothed version is obtained by applying a Gaussian Blur filter in frequency domain, using, as cut-off frequency, a user-specified value called Blend Strength.
+      
+  \subsection{Combine Operation}
+  
+    Using the outputs from the Base Surface Mapping and the Random Detail Extraction parts, the detailed surface can be computed. This is obtained by multiplying the mapped base surface by the random details resulting in an adjusted version of the details. The latter is then added to the Base surface.
+      
   \subsection{Result Normalization}
+  
+	The final step in the blending phase is to normalize the result. This is done using user-defined bounds that need to be comprised between 0 and 255 in order for the surface to be stored in a single channel image using, for each pixel, an 8 bit unsigned integer.
+    
   \subsection{Surface Normals Calculation}
+  
+    In addition to the previously described steps, a normal map is also computed for rendering purposes. This is done by filtering the final surface with a 3 by 3 Sobel filter in both x and y directions.
+    
+\begin{landscape}
+	\pagestyle{lscape}
+	
+	\section {Parameters Summary}
+	\vspace*{\fill}
+	
+	\begin{table}[h!] \centering \footnotesize
+		\renewcommand{\arraystretch}{2.0}
+		% \setlength{\tabcolsep}{18pt}
+		
+		\begin{tabularx}{\linewidth}{|c|c|c|b|c|c|}
+			\hline
+			\multicolumn{2}{|c|}{\textbf{Phase}} & \heading{Name} & \heading{Description} & \heading{Minimum} & \heading{Maximum} \\ 
+			\hline \hline
+			\multirow{5}{*}{\bfseries\shortstack{Random Surface  \\ Generation}} & \textbf{Fourier Filtering} & Filter Power & $\beta$ value & 1.0 & 2.9 \\
+			\cline{2-6} & \multirow{4}{*}{\textbf{Noise Synthesis}} & Octaves & Number of noise samples & & \\
+			\cline{3-6} & & Lacunarity & Gap between successive frequencies & & \\
+			\cline{3-6} & & Persistence & Contribution gap between successive octaves & & \\
+			\cline{3-6} & & Base & Base frequency value & & \\
+			\hline
+			\multicolumn{2}{|c|}{
+				\multirow{2}{*}{\bfseries\shortstack{Blending}}
+			}
+			& Spline Control Points & & &  \\
+			\cline{3-6} \multicolumn{2}{|c|}{} & Blend Strength & & & \\
+			\hline
+			\multicolumn{2}{|c|}{\bfseries\shortstack{Result Normalization}} 
+		 & Result Bounds & & &  \\
+			\hline
+			
+		\end{tabularx}
+		\caption{Process Parameters}
+		\label{table:parameters}
+	\end{table}
+	\vspace*{\fill}
+\end{landscape}
  

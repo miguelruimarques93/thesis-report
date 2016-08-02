@@ -1,8 +1,59 @@
 \chapter{Introduction}
-This is a sample of thesis text. This is a sample of thesis text. This is a 
-sample of thesis text. This is a sample of thesis text. This is a sample of
-thesis text.
 
-This is a sample of thesis text. This is a sample of thesis text. This is a 
-sample of thesis text. This is a sample of thesis text. This is a sample of
-thesis text.
+Procedural generation enables designers to create content algorithmically instead of manually. This technique is used in entertainment areas, such as, 3D animation and video game design.
+
+One particular case in which procedural generation is used is the creation of random terrains, which is the focus of this thesis.
+
+%\begin{itemize}
+%	\item Procedural generation
+%    \item Algorithmic approach
+%    \item Random Algorithms
+%	\item Use Cases such as:
+%	\begin{itemize}
+%		\item 3D animations
+%		\item Video Games
+%	\end{itemize}
+%\end{itemize}
+
+\section {Problem}
+
+The main advantage of procedural content against manually created content is that the former is less time consuming and, as a result, enables designers to create detailed content faster. On the other hand the existent methods for random terrain generation are difficult to control and, sometimes, the parameters are unintuitive, which leads to a trial and error design approach, in which the designer changes the parameters and sees what happens.
+
+%\begin{itemize}
+%	\item Procedurally generated content vs Manually created content
+%	\item Manually create realistic content is very time consuming	
+%	\item Control issues in procedural generation make it unreliable in many situations
+%\end{itemize}
+
+\section{Main Requirements}
+
+In terms of requirements they were divided in technical and functional requirements. The main technical requirements are:
+\begin{itemize}
+	\item The implemented application must be web based
+	\item The Random generation process must be based in fractal geometry
+\end{itemize}
+
+\begin{itemize}
+	\item Describe requirements with market tendencies
+\end{itemize}
+
+\section{Proposed Solution}
+
+In this thesis a hybrid approach to content creation is proposed. This approach involves the modelling of a deterministic cad model that provides the basic topology of the terrain and the generation of a random terrain that will provide the details for that topology. This two surfaces are then blended together using a method that is explained in Chapter \ref{chap:methodology}. The main focus of this project is the implementation of the blending process and, as a result, the developed application does not deal with the cad modelling phase, but only with the random generation and blending phases.
+
+%\begin{itemize}
+%	\item Define basic terrain features with a deterministic cad model
+%	\item Generate a random surface that will provide the details
+%	\item Blend both surfaces creating a terrain with the basic topology of the cad surface and the high level details of the random surface
+%\end{itemize}
+
+\section{Thesis Outline}
+
+This thesis is divided as follows:
+\begin{itemize}
+	\item \underline{Chapter \ref{chap:literature_review}} contains the literature review.
+	\item \underline{Chapter \ref{chap:methodology}} explains the methodology.
+	\item \underline{Chapter \ref{chap:software_details}} presents the software details and constraints.
+	\item \underline{Chapter \ref{chap:results}} presents the results.
+	\item \underline{Chapter \ref{chap:conclusions}} presents the conclusions.
+\end{itemize}

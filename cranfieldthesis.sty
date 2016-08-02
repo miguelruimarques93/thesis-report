@@ -100,6 +100,8 @@
 \renewcommand{\bibname}{\MakeUppercase{References}}
 
 \setcounter{tocdepth}{3}
+\setcounter{secnumdepth}{5}
+
 \renewcommand\cftchapfont{}
 \renewcommand\cftchappagefont{}
 \renewcommand\cftsecpagefont{}
@@ -143,14 +145,15 @@
 % \clearpage\addcontentsline{toc}{chapter}{List of Equations}
 
 \long\def\theequation{\ifnum \c@chapter > \z@ \thechapter -\fi \@arabic \c@equation}
+\long\def\thefigure{\ifnum \c@chapter > \z@ \thechapter -\fi \@arabic \c@figure}
 
 \newcommand{\listequationsname}{\Large\MakeUppercase{List of Equations}}
 \newlistof{myequations}{equ}{\listequationsname}
 
-\newcommand{\myequations}[1]{\addcontentsline{equ}{myequations}{(\theequation) {#1}}\par}
+\newcommand{\myequation}[1]{\addcontentsline{equ}{myequations}{(\theequation) {#1}}\par}
 
 \newcommand\sslistofequations{\clearpage\addcontentsline{toc}{chapter}{List of Equations}\singlespacing\listofmyequations\doublespacing}
 
-
+\setlength\parindent{0pt}
 
 \endinput

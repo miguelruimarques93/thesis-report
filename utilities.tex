@@ -1,0 +1,57 @@
+\DeclareNewLayer[
+background,
+rightmargin,
+contents={%
+	\parbox[b][\layerheight][c]{\dimexpr\footskip+\footheight\relax}{%
+		\hfill\rotatebox{90}{\pagemark}}}
+]{lscape.foot}
+
+\DeclareNewLayer[
+background,
+textarea,
+addhoffset=\dimexpr-\headsep-\headheight\relax,
+width=\dimexpr\headsep+\headheight\relax,
+%contents={\hfill\rotatebox{90}{\headmark}\hspace*{\headsep}}
+contents={}
+]{lscape.head}
+
+\DeclareNewPageStyleByLayers{lscape}{lscape.foot,lscape.head}
+
+\newcolumntype{b}{X}
+\newcolumntype{s}{>{\hsize=.5\hsize}X}
+\newcommand{\heading}[1]{\multicolumn{1}{c|}{\textbf{#1}}}
+
+% By default, LaTeX uses a serif font - these are traditionally thought to be
+% easier to read.   If you'd prefer sans-serif, please uncomment the 
+% following line.
+%\renewcommand{\familydefault}{\sfdefault}
+\renewcommand{\rmdefault}{phv} % Arial
+\renewcommand{\sfdefault}{phv} % Arial
+
+\let\oldappendices\appendices
+\let\endoldappendices\endappendices
+
+\renewenvironment{appendices}{
+	\oldappendices
+		
+	\addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
+	\renewcommand\thesection{\Alph{section}}%
+	
+	\titlecontents{section}
+	[1.0em]
+	{}
+	{\appendixname~\thecontentslabel~}
+	{}
+	{\titlerule*[0.3pc]{.}\contentspage}
+	
+	\titleformat{\section}{\large\bfseries}{\appendixname~\thesection}{0.5em}{}
+	\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.5em}{}
+	\titleformat{\subsubsection}{\normalsize\bfseries}{\thesubsubsection}{0.5em}{}
+}{
+	\endoldappendices
+}
+
+% Switch [1] for 1. in Reference list but maintain [1] in citation
+
+
+\makeatletter\renewcommand{\@biblabel}[1]{#1.}\makeatother
