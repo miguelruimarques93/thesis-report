@@ -11,7 +11,7 @@
     
       The application was developed using Google's material design \cite{Google2016} for the user interface style. The editor is the main page of the application and it is shown in Figure \ref{fig:editor_page}. It contains a menu bar (1) where the user has access to the available functions, a details panel (2), which has the parameter controllers, a list with the previously results (3), a panel where the details of the selected previous result are displayed (4) and a canvas where the preview of the current current terrain is rendered (5).
       
-      \begin{figure}[h!]
+      \begin{figure}[H]
       	\centering
       	\includegraphics[width=0.95\linewidth]{images/screenshots/editorWithBoxes.pdf}
       	\caption{Editor Page}
@@ -63,33 +63,59 @@
     
   \section {Logical View} %CC Logical View
   
-    \begin{itemize}
-      \item Angular.JS oriented design
-      \item Routes (Directives)
-      \item Services
-      \item Views
-    \end{itemize}
+	  The logical architecture of the developed application was influenced by the usage of Angular.js. Due to this in Figure \ref{fig:class_diagram}, where the class UML diagram for the application is shown, two prototypes are attributed to the classes: controller and service; the controller classes are responsible by the dynamic behaviour of the element to which they are attributed; the service classes are lazily instantiated singletons that are injected in the application in the required modules.
+    
+    \begin{figure}[H]
+    	\begin{center}
+    		\includegraphics[width=\textwidth]{images/diagrams/class.pdf}
+    	\end{center}
+    	\caption{Class Diagram}
+    	\label{fig:class_diagram}
+    \end{figure}
     
   \section {Process View}
     
     \subsection {GPU Computation Framework} \label{sec:software:process:gpu} %CC Process View
     
-      \begin{itemize}
-      	\item Small introduction to WebGL pipeline
-      	\item Generic algorithm execution (Framebuffers \& Textures)
-      	\item Matrix Type System
-      	\item Implemented Features
-      	  \begin{itemize}
-      	  	\item FFT \& IFFT
-      	  	\item Element-wise Operations
-      	  	\item Normalization
-      	  	\item Frequency domain filters
-      	  	\item Spatial domain filters
-      	  \end{itemize}
-		\item Radix-2 algorithm for FFT
-		\item Reduction based algorithm for finding minimum and maximum
-      \end{itemize}
+%      \begin{itemize}
+%      	\item Small introduction to WebGL pipeline \checkmark
+%      	\item Generic algorithm execution (Framebuffers \& Textures) \checkmark
+%      	\item Matrix Type System \checkmark
+%      	\item Implemented Features
+%      	\begin{itemize}
+%      	  \item FFT \& IFFT \checkmark
+%      	  \item Element-wise Operations
+%      	  \item Normalization
+%      	  \item Frequency domain filters
+%      	  \item Spatial domain filters
+%      	\end{itemize}
+%      \end{itemize}
+    
+      In order to optimize some operations performed by the application a GPU computation framework was implemented. This framework uses WebGL 2 to perform pixel-wise operations on images. WebGL 2 is a 3D rendering API for the web derived from OpenGL ES 3.0, which features a programmable rendering pipeline that gives the developer the ability to manipulate the rendering data in two different stages: the vertex stage and the fragment stage. The vertex stage executes the vertex shader using as input the vertex data and it outputs the final vertex position as a 4-component floating-point vector in homogeneous coordinates $(x, y, z, w)$. In the fragment stage the fragment shader is executed once per fragment and it's output depends on the active render target, which can be either the HTML canvas or a texture. When the render target is the HTML canvas the output is 4-component floating-point vector that represents the color of the fragment. When the render target is a texture the output depends on the texture format. For a texture to be a render target it's format needs to be \textit{color-renderable} and, in WebGL 1, as in OpenGL ES 2, only 3 or 4 component integer textures are \textit{color-renderable}. This limitation is surpassed in WebGL 2 and in OpenGL ES 3, where, with the \textit{EXT\_color\_buffer\_float} extension, floating-point textures with 1, 2, 3 or 4 components are considered \textit{color-renderable}.
       
+      In order to use WebGL for computations the framework uses a texture as the render target and renders a square on a viewport of the same size as the texture, resulting in a 1:1 fragment to pixel mapping, and uses a specific fragment shader depending on the algorithm that is being executed. Due to restrictions imposed by WebGL the textures dimensions need to be powers of 2 and their format is limited to 1, 2 or 4 components per pixel of 8 bits unsigned integer, 32 bits signed integer or 32 bits floating-point.
+      
+	  \subsubsection{Implemented algorithms}
+	  
+	    The implemented algorithms can be divided in 3 categories:
+	    \begin{itemize}
+	      \item Fast Fourier Transform
+	      \item Element-wise Operations
+	      \item Matrix Normalization
+	    \end{itemize}
+	    
+	    The Fast Fourier Transform was implemented using the radix-2 Stockham FFT algorithm used in \cite{Lloyd2008}. This algorithm avoids the bit reversal phase of the FFT by reordering the dataflow and, consequently, cannot be performed in-place, which is not a problem for this implementation taking into account that textures in WebGL cannot be read from and written to at the same time. Additionally, as noted in \cite{Lloyd2008}, in order to compute a 2D FFT, the matrix is usually transposed to optimize the traversal of an array stored linearly in memory. This issue is also surpassed as, on a GPU, textures are swizzle, thus, no transposes are performed. 
+	    To implement the Inverse Fast Fourier Transform the FFT implementation was used with the real and imaginary parts swapped as shown in \cite[p.450]{Lyons2004}.
+	    
+	    The element-wise operations implemented are addition, subtraction, multiplication and division. There are two version of this operations: the binary version, where two matrices are combined using the given operator, and the immediate version, where the operator is applied to matrix and to a given value. Additionally some image processing algorithms were implemented: two frequency domain filters: the gaussian blur and the $f^{-\beta}$, that were implemented by multiplying the fourier transform of the matrix by the fourier transform of the filter, which was computed using the analytical formulas; and a spatial domain sobel filter, both in x and y, which was implemented by performing a pixel-wise convolution of the matrix.
+	    
+	    In order to implement matrix normalization the process was divided in two phases. The first phase consists in finding the minimum and the maximum value of the matrix. The second is the element-wise execution of equation \ref{eq:software:gpu:norm}. To implement the first phase in parallel a reduction method was used. This method consists in first reducing each row to it's minimum and maximum, resulting in a vector of two values, and then reducing the resultant vector two the global minimum and maximum of the matrix.
+	    
+	    \begin{equation} \label{eq:software:gpu:norm}
+		  M_{Normalized}(x, y) = \frac{M(x, y) - minimum_M}{maximum_M - minimum_M}
+	    \end{equation}
+	    \myequation{Normalization Operation}
+	    
     \subsection {Blending Process Pipeline} %CC Process View
     
       \begin{itemize}
