@@ -5,10 +5,10 @@ This chapter presents a detailed explanation of the proposed process.
 
 %In this chapter the used random generation methods are presented and the created blending process is explained in detail. \par
 
-\begin{itemize}
+\begin{notes}
 	\item Detailed proposed process
 	\item Control parameters available to the user
-\end{itemize}
+\end{notes}
 
 \section{Process Overview}
 
@@ -39,47 +39,6 @@ This chapter presents a detailed explanation of the proposed process.
 \end{figure}
 
 The proposed workflow consists of three high level phases which are presented in Figure \ref{fig:process_phases}. The first is the CAD modelling phase (section \ref{sec:methodology:phase1}) which consists on the creation of a simplified model of the terrain, which will be denominated as base surface, containing only the main characteristics, such as, mountains and valleys. The second phase (section \ref{sec:methodology:phase2}) consists in the generation of the random surface from which the details will be acquired. Finally the third and final phase is the blending phase (section \ref{sec:methodology:phase3}) in which the base surface is combined with the random surface to create a more detailed version of the terrain.
-
-%\begin{figure}[!h]
-%	\begin{center}
-%		\begin{tikzpicture}
-%		[
-%		font=\sffamily,
-%		every matrix/.style={column sep=0.01cm, row sep=0.5cm},
-%		source/.style={draw, thick, rounded corners, fill=yellow!20, inner sep=.3cm},
-%		process/.style={draw, thick, fill=blue!20, inner sep=.3cm},
-%		to/.style={->,semithick,font=\sffamily\footnotesize},
-%		every node/.style={anchor=center}
-%		]
-%		
-%		\matrix[matrix of nodes]
-%		{
-%			& |[source] (base-surface)| \shortstack{Load \\ Base Surface} & \\ 
-%			|[process] (random)| \shortstack{ Generate  \\ Random Surface } &  &[row sep=1cm] |[process] (norm)| Normalize \\
-%			|[process] (unsharp)| \shortstack{Gaussian Blur \\ \& Subtraction} & &[row sep=1cm] |[process] (map)| \shortstack{Map According to \\ Hermite Spline} \\
-%			& |[process] (multiply)| Multiply & \\
-%			& |[process] (add)| Add Base Surface & \\
-%			& |[process] (norm2)| Normalize & \\
-%			& |[source] (result) | \shortstack{Result Surface \\ \& Normal Map} & \\
-%		};
-%		
-%		\draw[to] (base-surface) -| node[pos=0.25, above] {Size} (random);
-%		\draw[to] (random) -- (unsharp);
-%		\draw[to] (unsharp) |- node[pos=0.5, below] {\shortstack{ Random Surface  Details }} (multiply);
-%		
-%		\draw[to] (base-surface) -| node[pos=0.25, above] {Surface} (norm);
-%		\draw[to] (norm) -- (map);
-%		\draw[to] (map) |- node[pos=0.5, below] {\shortstack{ Adjusted Base Surface }} (multiply);
-%		
-%		
-%		\draw[to] (multiply) -- (add);
-%		\draw[to] (add) -- (norm2);
-%		\draw[to] (norm2) -- (result);
-%		\end{tikzpicture}
-%	\end{center}
-%   	\caption{Process Overview}
-%   	\label{fig:process_overview}
-%\end{figure}
 
 \section {Phase 1: CAD Modelling} \label{sec:methodology:phase1}
 
@@ -141,19 +100,18 @@ With the base surface obtained from the first phase it is now possible to genera
     The noise synthesis method consists on using a weighted average of several random values to approximate an fBm surface, as described in equation \ref{eq:noise_synthesis}. This assumes that the random number generation is a structured noise function. The implementation for this method is based on the code presented in \cite{Musgrave1993}. There are several parameters used in the method, namely:
     
     \begin{itemize}
-    	\item \textbf{Number of octaves:} number of noise samples to use
-    	\item \textbf{Persistence:} contribution gap between successive octaves
-    	\item \textbf{Lacunarity:} gap between successive frequencies
-    	\item \textbf{Base:} base value for noise arguments
-    	\item \textbf{Noise:} noise function used to generate random numbers (eg: perlin noise \cite{Perlin1985}, simplex noise \cite{Perlin2002})
+      \item \textbf{Frequency:} noise arguments divider
+      \item \textbf{Number of octaves:} number of noise samples to use
+      \item \textbf{Persistence:} contribution gap between successive octaves
+      \item \textbf{Lacunarity:} gap between successive frequencies
+      \item \textbf{Base:} base value for noise arguments
+      \item \textbf{Noise:} noise function used to generate random numbers (eg: perlin noise \cite{Perlin1985}, simplex noise \cite{Perlin2002})
     \end{itemize}
     
     
 
 
 \section{Phase 3: Blending}  \label{sec:methodology:phase3}
-  
-  
   
   \begin{figure}[!h]
   	\begin{center}
@@ -191,7 +149,12 @@ With the base surface obtained from the first phase it is now possible to genera
     
   \subsection{Random Detail Extraction}
 
-	In order to extract the details from the random surface, a high-pass filter is used. In the case of this application the HPF is implemented by subtracting a smoothed version of the surface to the surface itself. The smoothed version is obtained by applying a Gaussian Blur filter in frequency domain, using, as cut-off frequency, a user-specified value called Blend Strength.
+	In order to extract the details from the random surface, a high-pass filter is used. In the case of this application the HPF is implemented by subtracting a smoothed version of the surface to the surface itself. The smoothed version is obtained by applying a Gaussian Blur filter in frequency domain, using, as cut-off frequency, a value calculated from a user-specified parameter, called Blend Strength, using \ref{eq:cut_off_freq}.
+	
+	\begin{equation} \label{eq:cut_off_freq}
+	  f_{Cut-off} = \frac{0.5}{BlendStrength}
+	\end{equation}
+	\myequation{Gaussian blur cut-off frequency}
       
   \subsection{Combine Operation}
   
@@ -206,39 +169,34 @@ With the base surface obtained from the first phase it is now possible to genera
     In addition to the previously described steps, a normal map is also computed for rendering purposes. This is done by filtering the final surface with a 3 by 3 Sobel filter in both x and y directions.
     
 \begin{landscape}
-	\pagestyle{lscape}
-	
-	\section {Parameters Summary}
-	\vspace*{\fill}
-	
-	\begin{table}[h!] \centering \footnotesize
-		\renewcommand{\arraystretch}{2.0}
-		% \setlength{\tabcolsep}{18pt}
-		
-		\begin{tabularx}{\linewidth}{|c|c|c|b|c|c|}
-			\hline
-			\multicolumn{2}{|c|}{\textbf{Phase}} & \heading{Name} & \heading{Description} & \heading{Minimum} & \heading{Maximum} \\ 
-			\hline \hline
-			\multirow{5}{*}{\bfseries\shortstack{Random Surface  \\ Generation}} & \textbf{Fourier Filtering} & Filter Power & $\beta$ value & 1.0 & 2.9 \\
-			\cline{2-6} & \multirow{4}{*}{\textbf{Noise Synthesis}} & Octaves & Number of noise samples & & \\
-			\cline{3-6} & & Lacunarity & Gap between successive frequencies & & \\
-			\cline{3-6} & & Persistence & Contribution gap between successive octaves & & \\
-			\cline{3-6} & & Base & Base frequency value & & \\
-			\hline
-			\multicolumn{2}{|c|}{
-				\multirow{2}{*}{\bfseries\shortstack{Blending}}
-			}
-			& Spline Control Points & & &  \\
-			\cline{3-6} \multicolumn{2}{|c|}{} & Blend Strength & & & \\
-			\hline
-			\multicolumn{2}{|c|}{\bfseries\shortstack{Result Normalization}} 
-		 & Result Bounds & & &  \\
-			\hline
-			
-		\end{tabularx}
-		\caption{Process Parameters}
-		\label{table:parameters}
-	\end{table}
-	\vspace*{\fill}
+  \pagestyle{lscape}
+  
+  \section {Parameters Summary}
+  \vspace*{\fill}
+  
+  \begin{table}[h!] \centering \footnotesize
+  	 \renewcommand{\arraystretch}{2.0}
+  	
+     \begin{tabularx}{\linewidth}{|c|c|c|b|c|c|c|}
+       \hline
+       \multicolumn{2}{|c|}{\textbf{Phase}} & \heading{Name} & \heading{Description} & \heading{Type} & \heading{Minimum} & \heading{Maximum} \\ \hline \hline
+       \multirow{6}{*}{\bfseries\shortstack{Random Surface  \\ Generation}} & \textbf{Fourier Filtering} 
+       & Filter Power & $\beta$ value & \textit{float} & 1.0 & 2.9 \\ \cline{2-7} 
+       & \multirow{5}{*}{\textbf{Noise Synthesis}} 
+       & Frequency & Noise arguments divider & \textit{integer} & 1 & 2000 \\ \cline{3-7} 
+       & & Octaves & Number of noise samples & \textit{integer} & 1 & 10 \\ \cline{3-7} 
+       & & Lacunarity & Gap between successive frequencies & \textit{float} & 0.01 & 10.0 \\ \cline{3-7} 
+       & & Persistence & Contribution gap between successive octaves & \textit{float} & 0.01 & 10.0 \\ \cline{3-7} 
+       & & Base & Base frequency value & float & 0.01 & 20.0 \\ \hline
+       \multicolumn{2}{|c|}{\multirow{2}{*}{\bfseries\shortstack{Blending}}}
+       & Spline Control Points & Mapping between original height and detail multiplier. & \textit{float} & 0.0 & 1.0 \\ \cline{3-7} 
+       \multicolumn{2}{|c|}{} & Blend Strength & Gaussian Blur control parameter & \textit{integer} & 1 & 500 \\ \hline
+       \multicolumn{2}{|c|}{\bfseries\shortstack{Result Normalization}} 
+       & Result Bounds & Values between which the final result will be normalized. & \textit{integer} & 0 & 255 \\ \hline
+     \end{tabularx}
+     \caption{Process Parameters}
+     \label{table:parameters}
+  \end{table}
+  \vspace*{\fill}
 \end{landscape}
  

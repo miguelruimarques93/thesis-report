@@ -55,3 +55,14 @@ contents={}
 
 
 \makeatletter\renewcommand{\@biblabel}[1]{#1.}\makeatother
+
+\newenvironment{notes}{
+	\vspace{2em}
+	\begin{itemize}
+	\footnotesize
+	\color{red}
+}
+{
+	\end{itemize}
+	\vspace{2em}
+}
