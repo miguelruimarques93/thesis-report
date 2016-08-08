@@ -32,8 +32,13 @@ contents={}
 \let\endoldappendices\endappendices
 
 \renewenvironment{appendices}{
+	\ifdefined\theHchapter\else\newcommand\theHchapter{\Alph{chapter}}\fi
+	\ifdefined\theHsection\else\newcommand\theHsection{\Alph{section}}\fi
+	
+	\setcounter{secnumdepth}{5}
+	
 	\oldappendices
-		
+
 	\addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
 	\renewcommand\thesection{\Alph{section}}%
 	
@@ -66,3 +71,8 @@ contents={}
 	\end{itemize}
 	\vspace{2em}
 }
+
+\newcommand{\review}[1]{{
+%\color{red}
+#1
+}}

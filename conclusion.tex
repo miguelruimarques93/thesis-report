@@ -1,11 +1,13 @@
 \chapter{Conclusions} \label{chap:conclusions}
-
-  \begin{notes}
-    \item Implemented Features
-    \item Future work
-    \begin{itemize}
-      \item Viewer
-      \item Additional Pages (Help \& About)
-    \end{itemize}
-    \item Emphasise Web-based implementation
-  \end{notes}
+  
+  In this thesis a procedural terrain modelling method was proposed in the form of a hybrid process, in which, the 3d modeller creates a simplified base terrain comprised of the major features, and the developed system adds the high level details by generating a random surface, extracting it's details and adding them to the base terrain. 
+  
+  \section {Implemented Features}
+  
+    The system was implemented as a client-side single page web application using \textit{Angular.JS} and \textit{WebGL}. The surface enhancement process was developed, as well as, optimized using WebGL 2.0 as a platform to perform some computations and, as a result, some calculations are now performed between 10 and 20 times faster than with the CPU implementation. In order to preview the resultant terrain the \textit{three.js} library was used to render the terrain in an HTML 5 canvas. Furthermore the results can be exported as height maps or in a zip format supported by the implemented system which can be reimported and re-edited.
+  
+  \section {Further Work}
+  
+    Although the implemented system is capable of performing all the required operations some additional improvements could be researched, such as, other detail extraction methods, for example using different filters; usage of the base surface gradient in the blending process, more specifically, in the base surface mapping step in conjunction with the base surface height; additionally some more tools could be given to the user in order to provide more control over where to add details in the surface, as well as, to enable the usage of different method in distinct regions of the terrain.
+    
+    

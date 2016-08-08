@@ -13,6 +13,9 @@
 
 \usepackage{luatex85}
 
+\usepackage[pdftex, pdfpagelabels=true, linktocpage, hidelinks]{hyperref}
+% \usepackage{hypcap}
+
 % Use the custom "cranfieldthesis" LaTeX style file. 
 \usepackage{cranfieldthesis}
 \usepackage{amssymb}
@@ -25,7 +28,7 @@
 \usepackage{rotating}
 \usepackage{titletoc}
 \usepackage{tikz}
-% \usepackage{import}
+\usepackage[bottom]{footmisc}
 \usepackage{float}
 \usetikzlibrary{shapes, arrows, matrix}
 
@@ -62,15 +65,25 @@
 
 % Abstract and Keywords
 \begin{abstract}
-    Type your abstract here.
+	\doublespacing
+	
+    The process of modelling man made objects is, classically, a manual process where a user deforms a 3D object though the use of several techniques. This process is time-consuming and, with the usage of procedural techniques, can be improved, enabling the creation of more realistic and detailed content. One such case where this techniques have been widely used is in the creation of virtual terrains, not only because of the realistic details, but also due to the possibility of creating huge random infinite terrains that are used in the video game industry.
+    Procedural generation has the disadvantage of loss of detailed control over the modelled terrain, that is, using a purely procedural method it is complicated to specify where the major features of the terrain should be positioned. This is the main problem that this thesis addresses.
+    
+    In this project a hybrid terrain modelling process is proposed. In this process the user creates a simplified version of the desired terrain containing the basic topology, which is then blended with a random generated surface to create a detailed version of the terrain using image processing techniques. Additionally a web application, where this process is implemented, was developed using \textit{Angular.js} and \mbox{\textit{WebGL}}. The architecture for this application is detailed in this thesis. In order to improve the performance of the random generation and the blending process some GPU computations were implemented using \mbox{\textit{WebGL 2.0}}. This computations were then benchmarked and the comparison with their CPU counterparts is shown in this document.
+    
+    
 
 	\subsubsection*{Keywords}
-	Procedural Generation; Terrain Modelling; 
+	Procedural Generation; Terrain Modelling; Web Application; WebGL; Fractal geometry; GPU; Fourier filtering
 \end{abstract}
 
 % Acknowledgements
 \chapter{Acknowledgements}
-The author would like to thank \dots
+
+\begin{notes}
+  \item The author would like to thank
+\end{notes}
 
 % Table of Contents
 \sstableofcontents
@@ -87,7 +100,7 @@ The author would like to thank \dots
 % The list of abbreviations can't be automatically generated so you need to populate it yourself
 \begin{listofabbreviations}
     \abbrev{fBm}{Fractional Brownian Motion}
-    \abbrev{PMHCI}{Picewise Monotone Hermite Cubic Interpolation}
+%    \abbrev{PMHCI}{Picewise Monotone Hermite Cubic Interpolation}
     \abbrev{HPF}{High-pass Filter}
     \abbrev{FFT}{Fast Fourier Transform}
     \abbrev{IFFT}{Inverse Fast Fourier Transform}
@@ -120,10 +133,9 @@ The author would like to thank \dots
 \chapter*{Appendices}
 \addcontentsline{toc}{chapter}{Appendices}
 
-Whilst Heading 1 to Heading 6 can be used to number headings in the main body of the thesis, Heading styles 7–9 have been modified specifically for lettered appendix headings with Heading 7 having the ‘Appendix’ prefix as shown below. \\
-
 \begin{appendices}	
 	\input {user_manual}
+	\input {additional_results}
 \end{appendices}
 
 \backmatter

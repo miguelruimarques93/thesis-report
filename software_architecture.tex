@@ -1,4 +1,8 @@
-\chapter{Software Architecture} \label{chap:software_details}
+\chapter{Software Architecture} \label{chap:software_architecture}
+
+  \begin{notes}
+  	\item Write small introduction about 4+1 architectural view model
+  \end{notes}
 
   \section {Use Case View}
     
@@ -17,10 +21,6 @@
       	\caption{Editor Page}
       	\label{fig:editor_page}
       \end{figure}
-      
-      \begin{notes}
-      	\item Explain each panel in detail or leave it only for user manual ???
-      \end{notes}
     
     \subsection {Input and Output Formats}
     
@@ -49,7 +49,10 @@
       \caption{Component Diagram}
       \label{fig:component_diagram}
     \end{figure}
-
+    
+    \begin{notes}
+    	\item Fill Component Diagram modules with classes.
+    \end{notes}
 
     \subsection {Technologies}    
       
@@ -72,6 +75,10 @@
     	\caption{Class Diagram}
     	\label{fig:class_diagram}
       \end{figure}
+      
+      \begin{notes}
+      	\item Fill Class Diagram with main class methods
+      \end{notes}
     
   \section {Process View}
     
@@ -85,7 +92,9 @@
       
         To implement this framework two classes were created: the gpu class and the gpu\_matrix class (Figure \ref{fig:class_diagram}). The gpu class works as an Angular.js service which is injected wherever it is needed. At the same time this class is also factory for gpu\_matrix class instances, as the latter need an initialized gpu instance to be created, this is noted in the class diagram by the usage of the \textit{factory} prototype and the \textit{creates} relation between the two classes.
         
-        The gpu\_matrix class represents a matrix that was uploaded to the GPU. Due to restrictions imposed by WebGL the textures dimensions need to be powers of 2 and their format is limited to 1, 2 or 4 components per pixel of 8 bits unsigned integer, 32 bits signed integer or 32 bits floating-point. This class handles the allocation and relocation of the textures and framebuffers, as well as, the upload and download of the matrix from a to the GPU device.
+        The gpu\_matrix class represents a matrix that was uploaded to the GPU. Due to restrictions imposed by WebGL the textures dimensions need to be powers of 2 and their format is limited to 1, 2 or 4 components per pixel and 8 bits unsigned integer, 32 bits signed integer or 32 bits floating-point components. This class handles the allocation and reallocation of the textures and framebuffers, as well as, the upload and download of the matrix to and from the GPU device.
+        
+        The gpu class also contains the methods to execute the algorithms. Although this methods have different parameters depending on the algorithm that they execute, they all have as last parameter the return variable, which is also returned by the function. This rule enables the framework to reuse gpu\_matrix instances when one is passed into a function, otherwise, that is, when the last parameter is \textit{undefined}, a new gpu\_matrix is created and returned. Additionally, given that each algorithm requires different shader programs, a lazy initialization for the shader programs was implemented. This feature results in a smaller initialization time as it only compiles the shader programs when they are needed, on the first time a certain function is called.
       
 	  \subsubsection{Implemented algorithms}
 	  
@@ -110,12 +119,13 @@
 	    
     \subsection {Blending Process Pipeline} %CC Process View
       
-      In order to improve the application's performance a pipeline for the blending process was created. This pipeline saves the intermediate matrices of the blending process and reuses them when a parameter changes. This pipeline is illustrated in the activity diagram shown in Figure \ref{fig:activity_blending_process}, where the initial nodes represent the starting point when the associated parameter is modified. When this process reaches the final node a callback is invoked to trigger an update in the user interface.
+      In order to improve the application's performance a pipeline for the blending process was created. This pipeline saves the intermediate matrices of the blending process and reuses them when a parameter changes. This process is illustrated in the activity diagram shown in Figure \ref{fig:activity_blending_process}, where the initial nodes represent the starting point when the associated parameter is modified. When this process reaches the final node a callback is invoked to trigger an update in the user interface.
       
-      \begin{figure}[H]
+      \begin{figure}[h]
       	\begin{center}
-      	  \includegraphics[width=\textwidth]{images/diagrams/blending_process.pdf}
+      	  \includegraphics[width=0.98\textwidth]{images/diagrams/blending_process.pdf}
       	\end{center}
         \caption{Activity diagram for the blending process}
         \label{fig:activity_blending_process}
       \end{figure} 
+      

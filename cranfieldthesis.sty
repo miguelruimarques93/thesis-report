@@ -6,7 +6,7 @@
 \typeout{    using LaTeX, you will probably not run into any problems you can't fix}
 \typeout{    yourself.}
 
-\RequirePackage{geometry,calc,mathptmx,setspace,helvet, tocloft, titlesec, etoolbox}
+\RequirePackage{geometry,calc,caption,mathptmx,setspace,helvet,titlesec,tocloft,etoolbox}
 
 \geometry{
 	a4paper,
@@ -39,11 +39,15 @@
 \title{$\backslash$title\{My Thesis Title\}}
 \copyrightyear{$\backslash$copyrightyear\{2014\}}
 
-\patchcmd{\l@chapter}{#1}{\MakeUppercase{#1}}{}{}
+\patchcmd{\l@chapter}{#1}{\uppercase #1}{}{}
 
-\titlespacing*{\chapter}{0pt}{-0.5cm}{0pt}
-\titlespacing*{\section}{0pt}{0pt}{0pt}
-\titlespacing*{\subsection}{0pt}{0pt}{0pt}
+\newcommand*{\noaddvspace}{\renewcommand*{\addvspace}[1]{}}
+\addtocontents{lof}{\protect\noaddvspace}
+\addtocontents{lot}{\protect\noaddvspace}
+
+\titlespacing*{\chapter}{0pt}{-0.5cm}{6pt}
+\titlespacing*{\section}{0pt}{6pt}{0pt}
+\titlespacing*{\subsection}{0pt}{6pt}{0pt}
 \titleformat{\chapter}[block]{\bfseries\Large}{\thechapter\ }{0pt}{\uppercase}
 
 \renewcommand\maketitle{
@@ -95,12 +99,12 @@
 }}
 
 \newenvironment{references}
-{\cleardoublepage\addcontentsline{toc}{chapter}{\MakeUppercase{References}}\begin{thebibliography}{999}}
+{\cleardoublepage\phantomsection\addcontentsline{toc}{chapter}{References}\begin{thebibliography}{999}}
 {\end{thebibliography}\cleardoublepage}
-\renewcommand{\bibname}{\MakeUppercase{References}}
+\renewcommand{\bibname}{REFERENCES}
 
 \setcounter{tocdepth}{2}
-\setcounter{secnumdepth}{5}
+\setcounter{secnumdepth}{3}
 
 \renewcommand\cftchapfont{}
 \renewcommand\cftchappagefont{}
@@ -124,14 +128,57 @@
 \renewcommand{\cftsecindent}{\tocidentsec}
 \renewcommand{\cftsubsecindent}{\tocidentsubsec}
 
-\renewcommand\contentsname{\Large\MakeUppercase{Table of Contents}}
-\newcommand\sstableofcontents{\clearpage\addcontentsline{toc}{chapter}{Table of Contents}\singlespacing\tableofcontents\doublespacing}
+\renewcommand\cftbeforetoctitleskip{0pt}
+\renewcommand\cftbeforelottitleskip{0pt}
+\renewcommand\cftbeforeloftitleskip{0pt}
 
-\renewcommand\listfigurename{\Large\MakeUppercase{List of Figures}}
-\newcommand\sslistoffigures{\clearpage\addcontentsline{toc}{chapter}{List of Figures}\singlespacing\listoffigures\doublespacing}
+\renewcommand\cftaftertoctitleskip{12pt}
+\renewcommand\cftafterlottitleskip{12pt}
+\renewcommand\cftafterloftitleskip{12pt}
 
-\renewcommand\listtablename{\Large\MakeUppercase{List of Tables}}
-\newcommand\sslistoftables{\clearpage\addcontentsline{toc}{chapter}{List of Tables}\singlespacing\listoftables\doublespacing}
+\renewcommand\cftfigindent{0pt}
+\renewcommand\cfttabindent{0pt}
+
+\renewcommand{\cftfigfont}{\figurename~}
+\renewcommand{\cfttabfont}{\tablename~}
+
+\captionsetup[table]{labelsep=space}
+\captionsetup[figure]{labelsep=space}
+
+\renewcommand\contentsname{\Large{\MakeUppercase{Table of contents}}}
+\newcommand\sstableofcontents{
+	\clearpage\phantomsection\addcontentsline{toc}{chapter}{Table of Contents}
+	\singlespacing
+	\tableofcontents
+	\doublespacing}
+
+\renewcommand\listfigurename{\Large{\MakeUppercase{List of figures}}}
+\newcommand\sslistoffigures{
+	\clearpage\phantomsection\addcontentsline{toc}{chapter}{List of Figures}
+	\singlespacing
+	\listoffigures
+	\doublespacing
+}
+
+\renewcommand\listtablename{\Large{\MakeUppercase{List of tables}}}
+\newcommand\sslistoftables{
+	\clearpage\phantomsection\addcontentsline{toc}{chapter}{List of Tables}
+	\singlespacing
+	\listoftables
+	\doublespacing}
+
+\newcommand{\listequationsname}{\Large{\MakeUppercase{List of equations}}}
+\newlistof{myequations}{equ}{\listequationsname}
+\renewcommand\cftafterequtitleskip{12pt}
+\renewcommand\cftbeforeequtitleskip{0pt}
+
+\newcommand{\myequation}[1]{\addcontentsline{equ}{myequations}{(\theequation) {#1}}\par}
+
+\newcommand\sslistofequations{
+	\clearpage\phantomsection\addcontentsline{toc}{chapter}{List of Equations}
+	\singlespacing
+	\listofmyequations
+	\doublespacing}
 
 \newenvironment{abstract}
 {\chapter{Abstract}}
@@ -146,13 +193,7 @@
 
 \long\def\theequation{\ifnum \c@chapter > \z@ \thechapter -\fi \@arabic \c@equation}
 \long\def\thefigure{\ifnum \c@chapter > \z@ \thechapter -\fi \@arabic \c@figure}
-
-\newcommand{\listequationsname}{\Large\MakeUppercase{List of Equations}}
-\newlistof{myequations}{equ}{\listequationsname}
-
-\newcommand{\myequation}[1]{\addcontentsline{equ}{myequations}{(\theequation) {#1}}\par}
-
-\newcommand\sslistofequations{\clearpage\addcontentsline{toc}{chapter}{List of Equations}\singlespacing\listofmyequations\doublespacing}
+\long\def\thetable{\ifnum \c@chapter > \z@ \thechapter -\fi \@arabic \c@table}
 
 \setlength\parindent{0pt}
 
