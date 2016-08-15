@@ -1,5 +1,98 @@
+\newcolumntype{R}{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{5em}}
+
+\begin{landscape}
+	\pagestyle{lscape}
 \section{Additional Results}
-  \begin{notes}
-   	\item Tables with benchmark values
-   	\item Additional Terrains
-  \end{notes}
+  
+  In this appendix some extra results are presented. The results presented in Section \ref{app:sec:benchmarks} and Section \ref{app:sec:terrain_param} correspond to the values used to generate the plots and terrains from Sections \ref{sec:res:benchmarks} and \ref{sec:res:terrains} respectively.
+
+  \subsection{Benchmarks} \label{app:sec:benchmarks}
+
+\vspace*{\fill}
+
+    \begin{table}[H]
+	    \begin{adjustbox}{center}
+%	    \footnotesize
+    	\begin{tabular}{|l|R|R|R|R|R|R|R|}
+    		\hline
+    		& \multicolumn{1}{c|}{\textbf{16}} & \multicolumn{1}{c|}{\textbf{32}} & \multicolumn{1}{c|}{\textbf{64}} & \multicolumn{1}{c|}{\textbf{128}} & \multicolumn{1}{c|}{\textbf{256}} & \multicolumn{1}{c|}{\textbf{512}} & \multicolumn{1}{c|}{\textbf{1024}} \\ \hline
+    		\textbf{FFT}                           & 4179.20                 & 3964.26                 & 3620.65                 & 2542.06                  & 1956.19                  & 560.92                   & 77.63                     \\ \hline
+    		\textbf{EW Addition}       	 & 13821.15                & 13064.76                & 14438.87                & 9394.57                  & 7581.52                  & 3302.51                  & 1054.54                   \\ \hline
+    		\textbf{EW Subtraction}    	 & 14867.98                & 13636.73                & 14472.53                & 9862.57                  & 8887.81                  & 3697.81                  & 1057.83                   \\ \hline
+    		\textbf{EW Multiplication}   & 15354.87                & 14094.35                & 14613.53                & 10283.52                 & 8205.92                  & 3532.90                  & 1068.05                   \\ \hline
+    		\textbf{Normalization}          & 626.63                  & 333.82                  & 338.54                  & 365.62                   & 349.89                   & 295.60                   & 292.79                    \\ \hline
+    		\textbf{Perlin Noise}        & 456.57                  & 1115.75                 & 371.43                  & 385.58                   & 368.48                   & 256.84                   & 418.84                    \\ \hline
+    		\textbf{Simplex Noise}       & 111.52                  & 85.36                   & 436.74                  & 84.26                    & 83.93                    & 42.67                    & 50.19                     \\ \hline
+    		\textbf{Fourier Filtering}             & 101.38                  & 479.05                  & 432.66                  & 77.88                    & 91.32                    & 44.18                    & 51.32                     \\ \hline
+    	\end{tabular}
+    	\end{adjustbox}
+    	\caption{GPU Benchmark Results in Operations per Second}
+    \end{table}
+    
+      \vspace*{\fill}
+      
+    \newpage
+    
+      \vspace*{\fill}
+    
+    \begin{table}[H]
+      \begin{adjustbox}{center}
+%   		\footnotesize
+    	\begin{tabular}{|l|R|R|R|R|R|R|R|}
+    		\hline
+    		& \multicolumn{1}{c|}{\textbf{16}} & \multicolumn{1}{c|}{\textbf{32}} & \multicolumn{1}{c|}{\textbf{64}} & \multicolumn{1}{c|}{\textbf{128}} & \multicolumn{1}{c|}{\textbf{256}} & \multicolumn{1}{c|}{\textbf{512}} & \multicolumn{1}{c|}{\textbf{1024}} \\ \hline
+    		\textbf{FFT}                           & 43854.25                & 9920.98                 & 2266.42                 & 488.95                   & 55.52                    & 7.21                     & 1.34                      \\ \hline
+    		\textbf{EW Addition}       	           & 278212.75               & 75512.41                & 21943.37                & 6107.86                  & 1589.63                  & 360.05                   & 82.28                     \\ \hline
+    		\textbf{EW Subtraction}    	           & 164290.85               & 45383.68                & 11940.02                & 3248.37                  & 822.77                   & 105.84                   & 22.52                     \\ \hline
+    		\textbf{EW Multiplication}             & 160549.50               & 44596.58                & 11622.45                & 3156.14                  & 806.14                   & 96.66                    & 23.84                     \\ \hline
+    		\textbf{Normalization}                 & 84600.92                & 22334.53                & 5894.14                 & 1523.68                  & 382.28                   & 65.21                    & 11.72                     \\ \hline
+    		\textbf{Perlin Noise}                  & 87500.00                & 24064.28                & 6114.19                 & 1586.12                  & 403.06                   & 96.43                    & 24.50                     \\ \hline
+    		\textbf{Simplex Noise}                 & 5939.38                 & 1705.45                 & 476.55                  & 128.86                   & 33.67                    & 8.54                     & 2.22                      \\ \hline
+    		\textbf{Fourier Filtering}             & 4923.12                 & 1429.14                 & 383.19                  & 102.44                   & 26.46                    & 6.69                     & 1.74                      \\ \hline
+    	\end{tabular}
+    	\end{adjustbox}
+	    \caption{CPU Benchmark Results in Operations per Second}
+    \end{table}
+    
+    \vspace*{\fill}
+    
+    \newpage
+
+    \vspace*{\fill}
+    
+    \begin{table}[H]
+      \begin{adjustbox}{center}
+%      	\footnotesize
+    	\begin{tabular}{|l|R|R|R|R|R|R|R|}
+    		\hline
+    		& \multicolumn{1}{c|}{\textbf{16}} & \multicolumn{1}{c|}{\textbf{32}} & \multicolumn{1}{c|}{\textbf{64}} & \multicolumn{1}{c|}{\textbf{128}} & \multicolumn{1}{c|}{\textbf{256}} & \multicolumn{1}{c|}{\textbf{512}} & \multicolumn{1}{c|}{\textbf{1024}} \\ \hline
+    		\textbf{FFT}                         & 9.53\%                  & 39.96\%                 & 159.75\%                & 519.90\%                 & 3523.49\%                & 7777.27\%                & 5776.39\%                 \\ \hline
+    		\textbf{EW Addition}       			 & 4.97\%                  & 17.30\%                 & 65.80\%                 & 153.81\%                 & 476.94\%                 & 917.24\%                 & 1281.69\%                 \\ \hline
+    		\textbf{EW Subtraction}    			 & 9.05\%                  & 30.05\%                 & 121.21\%                & 303.62\%                 & 1080.23\%                & 3493.66\%                & 4697.81\%                 \\ \hline
+    		\textbf{EW Multiplication}           & 9.56\%                  & 31.60\%                 & 125.74\%                & 325.83\%                 & 1017.93\%                & 3655.08\%                & 4479.68\%                 \\ \hline
+    		\textbf{Normalization}        		 & 0.74\%                  & 1.49\%                  & 5.74\%                  & 24.00\%                  & 91.53\%                  & 453.29\%                 & 2498.49\%                 \\ \hline
+    		\textbf{Perlin Noise}                & 0.52\%                  & 4.64\%                  & 6.07\%                  & 24.31\%                  & 91.42\%                  & 266.34\%                 & 1709.64\%                 \\ \hline
+    		\textbf{Simplex Noise}               & 1.88\%                  & 5.01\%                  & 91.65\%                 & 65.39\%                  & 249.25\%                 & 499.42\%                 & 2261.13\%                 \\ \hline
+    		\textbf{Fourier Filtering}           & 2.06\%                  & 33.52\%                 & 112.91\%                & 76.03\%                  & 345.20\%                 & 659.93\%                 & 2951.49\%                 \\ \hline
+    	\end{tabular}
+    \end{adjustbox}
+    	\caption{GPU / CPU Benchmark Result Ratio}
+    \end{table}
+    
+      \vspace*{\fill}
+
+  \subsection{Terrain Parameters} \label{app:sec:terrain_param}
+  
+    \begin{table}[H]
+    	\newcommand{\splineheight}{1.5em}
+    	\newcommand\cincludegraphics[2][]{\raisebox{-0.3\height}{\includegraphics[#1]{#2}}}
+    	\footnotesize
+    	\centering
+    	\begin{adjustbox}{center}
+    	\input{param_table.tbl}
+    \end{adjustbox}
+    	\caption{Terrain parameters from Chapter \ref{chap:results}.}
+    	\label{tab:res:terrain_param}
+    \end{table}
+
+\end{landscape}

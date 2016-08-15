@@ -20,7 +20,8 @@ contents={}
 \newcolumntype{b}{X}
 \newcolumntype{s}{>{\hsize=.5\hsize}X}
 \newcommand{\heading}[1]{\multicolumn{1}{c|}{\textbf{#1}}}
-
+\newcommand*{\vcenteredhbox}[1]{\begingroup\setbox0=\hbox{#1}\parbox{\wd0}{\box0}\endgroup}
+    
 % By default, LaTeX uses a serif font - these are traditionally thought to be
 % easier to read.   If you'd prefer sans-serif, please uncomment the 
 % following line.
@@ -52,6 +53,10 @@ contents={}
 	\titleformat{\section}{\large\bfseries}{\appendixname~\thesection}{0.5em}{}
 	\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.5em}{}
 	\titleformat{\subsubsection}{\normalsize\bfseries}{\thesubsubsection}{0.5em}{}
+	
+	\renewcommand\theequation{\thesection-\arabic{equation}}
+	\renewcommand\thefigure{\thesection-\arabic{figure}}
+	\renewcommand\thetable{\thesection-\arabic{table}}
 }{
 	\endoldappendices
 }
@@ -73,6 +78,6 @@ contents={}
 }
 
 \newcommand{\review}[1]{{
-%\color{red}
+\color{red}
 #1
 }}

@@ -1,8 +1,6 @@
 \chapter{Methodology} \label{chap:methodology}
 
-\begin{notes}
-	\item Write Chapter Introduction
-\end{notes}
+In this chapter the proposed process is explained and the parameters for each phase are specified.
 
 \section{Process Overview}
 
@@ -89,7 +87,7 @@ With the base surface obtained from the first phase it is now possible to genera
 		\frac{\sum\limits_{i = 0}^{octaves - 1} noise(x \times lacunarity^i + base, y \times lacunarity^i + base) \times persistence^i}{ \sum\limits_{i = 0}^{octaves - 1} persistence^i}
 		\label{eq:noise_synthesis}
 	\end{equation}
-	\myequation{Noise Synthesis}
+	\myequation{}
   
     The noise synthesis method consists on using a weighted average of several random values to approximate an fBm surface, as described in equation \ref{eq:noise_synthesis}. This assumes that the random number generation is a structured noise function. The implementation for this method is based on the code presented in \cite{Musgrave1993}. There are several parameters used in the method, namely:
     
@@ -148,7 +146,7 @@ With the base surface obtained from the first phase it is now possible to genera
 	\begin{equation} \label{eq:cut_off_freq}
 	  f_{Cut-off} = \frac{0.5}{BlendStrength}
 	\end{equation}
-	\myequation{Gaussian blur cut-off frequency}
+	\myequation{}
       
   \subsection{Combine Operation}
   

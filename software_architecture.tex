@@ -1,8 +1,6 @@
 \chapter{Software Architecture} \label{chap:software_architecture}
-
-  \begin{notes}
-  	\item Write small introduction about 4+1 architectural view model
-  \end{notes}
+  
+  In this chapter the architecture of the application is specified using a 4+1 architectural view model which allows us to have an overview of the system from the point of view of multiple stakeholders \cite{Kruchten1995}.
 
   \section {Use Case View}
     
@@ -22,11 +20,11 @@
       	\label{fig:editor_page}
       \end{figure}
     
-    \subsection {Input and Output Formats}
+    \subsection {Input and Output Formats} \label{sec:io_formats}
     
-      In order to allow the user to load and save his terrains the application implements an import and export feature. The user can either import a Grayscale PNG image, which will be set as the base surface, or import a previously exported Zip file, which will add an entry to the history list and render the result contained in the file. In terms of export formats the user can: obtain: a 4-channel 8-bit per channel PNG containing the height map of the result; a Zip file that can be later imported; and a Grayscale 1-channel 16-bit per channel PNG image of the result height map, which can be import as a landscape in Unreal Engine 4.
+      In order to allow the user to load and save his terrains the application implements an import and export feature. The user can either import a Grayscale PNG image, which will be set as the base surface, or import a previously exported Zip file, which will add an entry to the history list and render the result contained in the file. In terms of export formats the user can: obtain: a 4-channel 8-bit per channel PNG containing the height map of the result; a Zip file that can be later imported; and a Grayscale 1-channel 16-bit per channel PNG image of the result height map, which can be imported as a landscape in Unreal Engine 4.
 
-  \section {Physical Architecture} %CC Deployment View
+  \section {Physical View} %CC Deployment View
     
     The system was developed as a client-side single page web application and thus all the server-side content is static. Given this properties the application works as a static web site and has a simple deployment architecture which consists on a HTTP web server and a web browser, as shown in Figure \ref{fig:deployment_diagram}.
     
@@ -38,21 +36,17 @@
     	\label{fig:deployment_diagram}
     \end{figure}
     
-  \section {Implementation Architecture} %CC Implementation View
+  \section {Development View} %CC Implementation View
     
-    The application is composed by three submodules (Figure \ref{fig:component_diagram}). The \textit{components} submodule is responsible for configuring the page routing and, as such, contains, as submodules, the editor and the benchmarks pages. The \textit{common} module contains services and directives that are generic to the application. The \textit{imgproc} module contains the image processing utilities.
+    The application is composed by three submodules (Figure \ref{fig:component_diagram}). The \textit{components} submodule is responsible for configuring the page routing and, as such, contains, as submodules, the editor and the benchmarks pages. The \textit{common} module contains services and directives that are generic to the application and the \textit{imgproc} module contains the image processing utilities.
     
     \begin{figure}[H]
       \begin{center}
-      	 \includegraphics[width=0.9\textwidth]{images/diagrams/component.pdf}
+      	 \includegraphics[width=0.9\textwidth]{images/diagrams/component-1.pdf}
       \end{center}
-      \caption{Component Diagram}
+      \caption{Package Diagram}
       \label{fig:component_diagram}
     \end{figure}
-    
-    \begin{notes}
-    	\item Fill Component Diagram modules with classes.
-    \end{notes}
 
     \subsection {Technologies}    
       
@@ -75,10 +69,6 @@
     	\caption{Class Diagram}
     	\label{fig:class_diagram}
       \end{figure}
-      
-      \begin{notes}
-      	\item Fill Class Diagram with main class methods
-      \end{notes}
     
   \section {Process View}
     
@@ -115,7 +105,7 @@
 	    \begin{equation} \label{eq:software:gpu:norm}
 		  M_{Normalized}(x, y) = \frac{M(x, y) - minimum_M}{maximum_M - minimum_M}
 	    \end{equation}
-	    \myequation{Normalization Operation}
+	    \myequation{}
 	    
     \subsection {Blending Process Pipeline} %CC Process View
       

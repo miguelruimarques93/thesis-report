@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg>
+<path class="line" d="M50,104.9375C64.42638769966705,103.90698576716882,116.65647941968446,101.51593852709259,137,93.9375S171.57853385275385,36.897015741161184,189,31.9375S242.6756695708293,65.37480235559858,250,69.9375"></path>
+<circle r="6.5" cx="50" cy="104.9375"></circle>
+<circle r="6.5" cx="137" cy="93.9375"></circle>
+<circle r="6.5" cx="189" cy="31.9375"></circle>
+<circle r="6.5" cx="250" cy="69.9375"></circle>
+</svg>
